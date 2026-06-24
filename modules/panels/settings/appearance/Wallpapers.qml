@@ -34,7 +34,7 @@ Item {
       onRunningChanged: {
         if (!running) {
           currentWallpaper = normalizePath(wallpaperPath);
-          showNotification(lang?.wallpapers?.success_set || "Đã đặt hình nền thành công!");
+          showNotification(lang?.wallpapers?.success_set || "Wallpaper set successfully!");
         }
       }
     }
@@ -50,7 +50,7 @@ Item {
 
       onRunningChanged: {
         if (!running) {
-          showNotification(lang?.wallpapers?.success_delete || "Đã xóa ảnh thành công!");
+          showNotification(lang?.wallpapers?.success_delete || "Image deleted successfully!");
         }
       }
     }
@@ -95,11 +95,11 @@ Item {
           spacing: ScalerService.s(10)
 
           Text {
-            text: lang?.wallpapers?.title || "Quản lý hình ảnh"
+            text: lang?.wallpapers?.title || "Image Management"
             color: theme.primary.foreground
             font.pixelSize: ScalerService.s(24)
             font.bold: true
-            font.family: "ComicShannsMono Nerd Font"
+            font.family: "Noto Sans"
           }
 
           Item {
@@ -134,7 +134,7 @@ Item {
                 text: modelData.name || `Screen ${index + 1}`
                 color: systemSettings.currentScreenIndex === index ? theme.primary.background : theme.primary.foreground
                 font.pixelSize: ScalerService.s(12)
-                font.family: "ComicShannsMono Nerd Font"
+                font.family: "Noto Sans"
               }
 
               MouseArea {
@@ -164,7 +164,7 @@ Item {
 
               Text {
                 text: lang?.wallpapers?.total_images || "Tổng số ảnh:"
-                font.family: "ComicShannsMono Nerd Font"
+                font.family: "Noto Sans"
                 color: theme.primary.dim_foreground
                 font.pixelSize: ScalerService.s(15)
               }
@@ -172,7 +172,7 @@ Item {
               Text {
                 text: folderModel.count
                 color: theme.normal.blue
-                font.family: "ComicShannsMono Nerd Font"
+                font.family: "Noto Sans"
                 font.pixelSize: ScalerService.s(18)
                 font.bold: true
               }
@@ -184,8 +184,8 @@ Item {
               }
 
               Text {
-                text: homePath ? (lang?.wallpapers?.path || "Đường dẫn:") + " ~/Pictures/Wallpapers/" : (lang?.wallpapers?.loading || "Đang tải...")
-                font.family: "ComicShannsMono Nerd Font"
+                text: homePath ? (lang?.wallpapers?.path || "Path:") + " ~/Pictures/Wallpapers/" : (lang?.wallpapers?.loading || "Loading...")
+                font.family: "Noto Sans"
                 color: theme.primary.dim_foreground
                 font.pixelSize: ScalerService.s(15)
                 elide: Text.ElideMiddle
@@ -200,10 +200,10 @@ Item {
           spacing: ScalerService.s(10)
 
           Text {
-            text: lang?.wallpapers?.wallpapers_label || "Hình nền:"
+            text: lang?.wallpapers?.wallpapers_label || "Wallpapers:"
             color: theme.primary.foreground
             font {
-              family: "ComicShannsMono Nerd Font"
+              family: "Noto Sans"
               pixelSize: ScalerService.s(16)
             }
           }
@@ -211,7 +211,7 @@ Item {
           // Status indicator
           Text {
             visible: folderModel.status === FolderListModel.Loading
-            text: lang?.wallpapers?.loading || "Đang tải..."
+            text: lang?.wallpapers?.loading || "Loading..."
             color: theme.primary.dim_foreground
             font.pixelSize: ScalerService.s(14)
             Layout.alignment: Qt.AlignCenter
@@ -403,7 +403,7 @@ Item {
           // No images message
           Text {
             visible: folderModel.count === 0 && homePath && folderModel.status === FolderListModel.Ready
-            text: lang?.wallpapers?.no_images || "Không tìm thấy ảnh nào trong thư mục ~/Pictures/Wallpapers"
+            text: lang?.wallpapers?.no_images || "No images found in ~/Pictures/Wallpapers folder"
             color: theme.primary.dim_foreground
             font.pixelSize: ScalerService.s(14)
             Layout.alignment: Qt.AlignCenter
@@ -412,7 +412,7 @@ Item {
           // Loading message
           Text {
             visible: !homePath
-            text: lang?.wallpapers?.loading_info || "Đang tải thông tin..."
+            text: lang?.wallpapers?.loading_info || "Loading information..."
             color: theme.primary.dim_foreground
             font.pixelSize: ScalerService.s(14)
             Layout.alignment: Qt.AlignCenter
@@ -447,7 +447,7 @@ Item {
         spacing: ScalerService.s(15)
 
         Text {
-          text: (lang?.wallpapers?.delete_confirm || "Xác nhận xóa") + "\n" + deleteDialog.fileNameToDelete
+          text: (lang?.wallpapers?.delete_confirm || "Confirm delete") + "\n" + deleteDialog.fileNameToDelete
           color: theme.normal.red
           font.pixelSize: ScalerService.s(16)
           font.bold: true
@@ -562,7 +562,7 @@ Item {
         }
       }
 
-      showNotification(lang?.wallpapers?.success_set || "Đã đặt hình nền thành công!");
+      showNotification(lang?.wallpapers?.success_set || "Wallpaper set successfully!");
       systemSettings.currentWallpaper = cleanPath;  // Lưu đường dẫn đã chuẩn hóa
     }
 

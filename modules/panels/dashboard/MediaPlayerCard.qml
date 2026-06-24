@@ -120,7 +120,7 @@ Item {
             Text {
               anchors.centerIn: parent
               text: "No Art"
-              font.family: "ComicShannsMono Nerd Font"
+              font.family: "Noto Sans"
               font.pixelSize: ScalerService.s(14)
               color: theme.primary.dim_foreground
               visible: albumImage.status !== Image.Ready
@@ -150,7 +150,7 @@ Item {
               }
             }
             text: root.mprisPlayer ? (root.mprisPlayer.trackTitle || "No song playing") : "No song playing"
-            font.family: "ComicShannsMono Nerd Font"
+            font.family: "Noto Sans"
             font.pixelSize: ScalerService.s(20)
             font.bold: true
             color: theme.primary.foreground

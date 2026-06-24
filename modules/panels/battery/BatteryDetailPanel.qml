@@ -45,7 +45,7 @@ PanelWindow {
       // Header
       Text {
         text: "🔋 Battery Details"
-        font.family: "ComicShannsMono Nerd Font"
+        font.family: "Noto Sans"
         color: theme.primary.foreground
         font.bold: true
         font.pixelSize: ScalerService.s(16)

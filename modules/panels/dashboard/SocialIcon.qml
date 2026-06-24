@@ -60,7 +60,7 @@ Item {
       onClicked: {
         linkProcess.command = ["xdg-open", linkSocial]
         linkProcess.startDetached()
-        // Bạn có thể thêm hành động khi click ở đây
+        // You can add click actions here
       }
     }
   }

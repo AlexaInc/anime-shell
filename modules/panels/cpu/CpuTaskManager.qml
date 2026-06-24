@@ -292,7 +292,7 @@ Item {
 
           Text {
             text: lang.ram.loading.message
-            font.family: "ComicShannsMono Nerd Font"
+            font.family: "Noto Sans"
             color: theme.primary.dim_foreground
             font.pixelSize: ScalerService.s(14)
           }

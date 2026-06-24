@@ -13,6 +13,9 @@ PanelWindow {
   implicitHeight: ScalerService.s(600)
 
   property real animationProgress: 0
+
+  signal confirmRequested(string action, string actionLabel)
+
   PackageService{
     id: packageService
     simplePackage: true
@@ -117,6 +120,7 @@ PanelWindow {
 
           Com.ListQuickActionButton {
             animationProgress: root.animationProgress
+            onConfirmRequested: (action, actionLabel) => root.confirmRequested(action, actionLabel)
           }
         }
 
@@ -190,9 +194,15 @@ PanelWindow {
             }
           }
 
-          // Right side: File Browser
+          // Right side: File Browser and Desktop Shortcuts
           Com.FileBrowserCard {
-            Layout.preferredWidth: ScalerService.s(300)
+            Layout.preferredWidth: ScalerService.s(220)
+            Layout.fillHeight: true
+            animationProgress: root.animationProgress
+          }
+
+          Com.DesktopShortcutsCard {
+            Layout.preferredWidth: ScalerService.s(220)
             Layout.fillHeight: true
             animationProgress: root.animationProgress
           }

@@ -27,6 +27,7 @@ PanelWindow {
   }
 
   exclusiveZone: 0
+  aboveWindows: true
   visible: false
   color: "transparent"
 
@@ -109,19 +110,19 @@ PanelWindow {
       spacing: ScalerService.s(20)
 
       Text {
-        text: lang?.confirm?.title || "Xác nhận"
+        text: lang?.confirm?.title || "Confirm"
         color: theme.primary.foreground
         font.pixelSize: ScalerService.s(24)
         font.bold: true
-        font.family: "ComicShannsMono Nerd Font"
+        font.family: "Noto Sans"
         anchors.horizontalCenter: parent.horizontalCenter
       }
 
       Text {
-        text: (lang?.confirm?.message || "Bạn có chắc chắn muốn {action}?").replace("{action}", pendingActionLabel)
+        text: (lang?.confirm?.message || "Are you sure you want to {action}?").replace("{action}", pendingActionLabel)
         color: theme.primary.foreground
         font.pixelSize: ScalerService.s(16)
-        font.family: "ComicShannsMono Nerd Font"
+        font.family: "Noto Sans"
         wrapMode: Text.WordWrap
         width: parent.width
         horizontalAlignment: Text.AlignHCenter
@@ -141,10 +142,10 @@ PanelWindow {
 
           Text {
             anchors.centerIn: parent
-            text: lang?.confirm?.no || "Không"
+            text: lang?.confirm?.no || "No"
             color: theme.primary.foreground
             font.pixelSize: ScalerService.s(18)
-            font.family: "ComicShannsMono Nerd Font"
+            font.family: "Noto Sans"
           }
 
           MouseArea {
@@ -166,10 +167,10 @@ PanelWindow {
 
           Text {
             anchors.centerIn: parent
-            text: lang?.confirm?.yes || "Có"
+            text: lang?.confirm?.yes || "Yes"
             color: mouseAreaYes.containsMouse ? "white" : theme.primary.foreground
             font.pixelSize: ScalerService.s(18)
-            font.family: "ComicShannsMono Nerd Font"
+            font.family: "Noto Sans"
             font.bold: true
           }
 

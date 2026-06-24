@@ -83,8 +83,12 @@ Singleton {
     root.currentMonth = months[now.getMonth()];
     root.currentYear = now.getFullYear();
     root.currentOfDays = now.getDate();
-    root.currentTime = Qt.formatTime(now, "HH:mm");
-    root.currentHour = Qt.formatTime(now, "HH");
+    var timeFormat = (Settings.clock.timeFormat === "12h") ? "hh:mm" : "HH:mm";
+    if (Settings.clock.showSeconds) timeFormat += ":ss";
+    if (Settings.clock.timeFormat === "12h") timeFormat += " AP";
+
+    root.currentTime = Qt.formatTime(now, timeFormat);
+    root.currentHour = Qt.formatTime(now, Settings.clock.timeFormat === "12h" ? "hh" : "HH");
     root.currentMinus = Qt.formatTime(now, "mm");
   }
 

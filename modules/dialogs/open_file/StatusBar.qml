@@ -46,12 +46,12 @@ Rectangle {
 
           TextField {
             Layout.fillWidth: true
-            placeholderText: "Tìm kiếm thư mục..."
+            placeholderText: "Search folder..."
             text: root.selectedFile.toString().replace("file://", "")
             palette.text: theme.primary.foreground       // màu chữ chính
             palette.placeholderText: theme.primary.dim_foreground  // sửa thành dim_foreground
             font.pixelSize: ScalerService.s(14)
-            font.family: "ComicShannsMono Nerd Font"
+            font.family: "Noto Sans"
             background: Rectangle {
               color: "transparent"
             }
@@ -112,11 +112,11 @@ Rectangle {
 
           TextField {
             Layout.fillWidth: true
-            placeholderText: "Tìm kiếm thư mục..."
+            placeholderText: "Search folder..."
             palette.text: theme.primary.foreground       // màu chữ chính
             palette.placeholderText: theme.primary.dim_foreground  // sửa thành dim_foreground
             font.pixelSize: ScalerService.s(14)
-            font.family: "ComicShannsMono Nerd Font"
+            font.family: "Noto Sans"
             background: Rectangle {
               color: "transparent"
             }

@@ -42,7 +42,7 @@ Rectangle {
         text: "❌ " + passwordBox.errorMessage
         color: theme.primary.foreground
         font.pixelSize: ScalerService.s(12)
-        font.family: "ComicShannsMono Nerd Font"
+        font.family: "Noto Sans"
       }
     }
 
@@ -64,7 +64,7 @@ Rectangle {
         Text {
           anchors.centerIn: parent
           text: passwordBox.showPassword ? networkData.saved_password : "••••••••"
-          font.family: "ComicShannsMono Nerd Font"
+          font.family: "Noto Sans"
           color: theme.primary.foreground
           font.pixelSize: ScalerService.s(14)
         }
@@ -130,7 +130,7 @@ Rectangle {
         placeholderText: networkData.security === "Open" ? (lang?.wifi?.no_password || "Không cần mật khẩu") : (lang?.wifi?.enter_password || "Nhập mật khẩu")
         echoMode: passwordBox.showPassword ? TextInput.Normal : TextInput.Password
         enabled: networkData.security !== "Open"
-        font.family: "ComicShannsMono Nerd Font"
+        font.family: "Noto Sans"
         font.pixelSize: ScalerService.s(14)
         horizontalAlignment: TextInput.AlignHCenter
         color: theme.primary.foreground

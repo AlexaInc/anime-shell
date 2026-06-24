@@ -18,7 +18,7 @@ PanelWindow {
   property var theme: ThemeService.theme
   property url selectedFile: ""
   property int gridSize: ScalerService.s(100)  // Kích thước mỗi item
-  property string currentPath: "file:///home/long/"
+  property string currentPath: "file:///home/hansaka/"
   signal fileOpened(url fileUrl)
 
   focusable: true
@@ -192,7 +192,7 @@ PanelWindow {
   function environmentVariable(name) {
     // Simple function to get env var - you might need to implement this properly
     switch(name) {
-      case "USER": return "long"
+      case "USER": return "hansaka"
       default: return ""
     }
   }

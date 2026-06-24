@@ -47,7 +47,7 @@ Item {
               id: songTextVertical
               text: Players.mprisPlayer?.trackTitle ?? "Not Playing"
               color: theme.primary.foreground
-              font.family: "ComicShannsMono Nerd Font"
+              font.family: "Noto Sans"
               font.pixelSize: ScalerService.s(12)
               width: parent.width
 
@@ -91,7 +91,7 @@ Item {
           Text {
             text: Players.mprisPlayer?.trackTitle
             color: theme.primary.dim_foreground
-            font.family: "ComicShannsMono Nerd Font"
+            font.family: "Noto Sans"
             font.pixelSize: ScalerService.s(10)
             width: parent.width
             elide: Text.ElideRight

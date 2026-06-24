@@ -163,7 +163,7 @@ Item {
             palette.text: theme.primary.foreground
             font {
               pixelSize: ScalerService.s(14)
-              family: "ComicShannsMono Nerd Font"
+              family: "Noto Sans"
             }
             background: Rectangle {
               color: "transparent"
@@ -239,7 +239,7 @@ Item {
                 color: theme.primary.foreground
                 font {
                   pixelSize: ScalerService.s(14)
-                  family: "ComicShannsMono Nerd Font"
+                  family: "Noto Sans"
                 }
                 palette.text: theme.primary.foreground
                 background: Rectangle {
@@ -332,7 +332,7 @@ Item {
                     color: theme.primary.foreground
                     font {
                       pixelSize: ScalerService.s(14)
-                      family: "ComicShannsMono Nerd Font"
+                      family: "Noto Sans"
                       bold: true
                     }
                     width: parent.width
@@ -344,7 +344,7 @@ Item {
                     color: theme.primary.dim_foreground
                     font {
                       pixelSize: ScalerService.s(12)
-                      family: "ComicShannsMono Nerd Font"
+                      family: "Noto Sans"
                     }
                     width: parent.width
                     elide: Text.ElideRight

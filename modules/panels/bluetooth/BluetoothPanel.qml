@@ -203,7 +203,7 @@ PanelWindow {
           }
 
           Text {
-            text: lang?.bluetooth?.turn_on || "Bật Bluetooth để kết nối với thiết bị"
+            text: lang?.bluetooth?.turn_on || "Turn on Bluetooth to connect to devices"
             color: theme.primary.dim_foreground
             font.pixelSize: ScalerService.s(12)
             anchors.horizontalCenter: parent.horizontalCenter

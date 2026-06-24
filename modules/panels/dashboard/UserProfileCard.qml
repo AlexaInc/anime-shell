@@ -126,7 +126,7 @@ Item {
             anchors.fill: parent
             source: Settings.dashboard.urlAvatar
             ? Settings.dashboard.urlAvatar
-            : "/home/long/Downloads/111423869.png"
+            : "/home/hansaka/Downloads/111423869.png"
             fillMode: Image.PreserveAspectCrop
             smooth: true
           }
@@ -173,11 +173,14 @@ Item {
       // User Name
       Label {
         Layout.alignment: Qt.AlignHCenter
+        width: parent.width - ScalerService.s(20)
         text: Settings.dashboard.fullname
         color: theme.primary.foreground
         font.pixelSize: ScalerService.s(40)
         font.bold: true
-        font.family: "ComicShannsMono Nerd Font"
+        font.family: "Noto Sans"
+        elide: Text.ElideRight
+        horizontalAlignment: Text.AlignHCenter
         opacity: root.animationProgress > 0.15 ? 1 : 0
         Behavior on opacity {
           NumberAnimation {
@@ -189,10 +192,13 @@ Item {
       // User Handle
       Label {
         Layout.alignment: Qt.AlignHCenter
+        width: parent.width - ScalerService.s(20)
         text: Settings.dashboard.username
         color: theme.primary.foreground
         font.pixelSize: ScalerService.s(24)
-        font.family: "ComicShannsMono Nerd Font"
+        font.family: "Noto Sans"
+        elide: Text.ElideRight
+        horizontalAlignment: Text.AlignHCenter
         opacity: root.animationProgress > 0.2 ? 1 : 0
         Behavior on opacity {
           NumberAnimation {

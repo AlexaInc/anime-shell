@@ -30,7 +30,7 @@ Rectangle {
   signal confirmRequested(string action, string actionLabel)
 
   function showConfirmDialog(action, actionLabel) {
-    // Emit signal để parent components xử lý
+    // Emit signal for parent components to handle
     confirmRequested(action, actionLabel);
   }
 
@@ -39,7 +39,7 @@ Rectangle {
     anchors.margins: ScalerService.s(12)
     spacing: ScalerService.s(10)
 
-    // Tiêu đề Menu
+    // Menu Title
     Item {
       Layout.fillWidth: true
       Layout.preferredHeight: ScalerService.s(60)
@@ -113,7 +113,7 @@ Rectangle {
       }
     }
 
-    // Cài đặt
+    // Settings
     Item {
       Layout.fillWidth: true
       Layout.preferredHeight: ScalerService.s(60)
@@ -188,7 +188,7 @@ Rectangle {
       }
     }
 
-    // Chế độ ngủ - Sửa theo chuẩn CustomRectangle
+    // Sleep - updated to CustomRectangle style
     Item {
       Layout.fillWidth: true
       Layout.preferredHeight: ScalerService.s(60)
@@ -249,13 +249,13 @@ Rectangle {
           hoverEnabled: true
           cursorShape: Qt.PointingHandCursor
           onClicked: {
-            showConfirmDialog("sleep", lang?.confirm?.sleep || "chuyển sang chế độ ngủ");
+            showConfirmDialog("sleep", lang?.confirm?.sleep || "sleep");
           }
         }
       }
     }
 
-    // Khóa màn hình - Sửa theo chuẩn CustomRectangle
+    // Lock screen - updated to CustomRectangle style
     Item {
       Layout.fillWidth: true
       Layout.preferredHeight: ScalerService.s(60)
@@ -316,13 +316,13 @@ Rectangle {
           hoverEnabled: true
           cursorShape: Qt.PointingHandCursor
           onClicked: {
-            showConfirmDialog("lock", lang?.confirm?.lock || "khóa màn hình");
+            showConfirmDialog("lock", lang?.confirm?.lock || "lock screen");
           }
         }
       }
     }
 
-    // Đăng xuất - Sửa theo chuẩn CustomRectangle
+    // Logout - updated to CustomRectangle style
     Item {
       Layout.fillWidth: true
       Layout.preferredHeight: ScalerService.s(60)
@@ -383,13 +383,13 @@ Rectangle {
           hoverEnabled: true
           cursorShape: Qt.PointingHandCursor
           onClicked: {
-            showConfirmDialog("logout", lang?.confirm?.logout || "đăng xuất");
+            showConfirmDialog("logout", lang?.confirm?.logout || "logout");
           }
         }
       }
     }
 
-    // Khởi động lại - Sửa theo chuẩn CustomRectangle
+    // Restart - updated to CustomRectangle style
     Item {
       Layout.fillWidth: true
       Layout.preferredHeight: ScalerService.s(60)
@@ -450,13 +450,13 @@ Rectangle {
           hoverEnabled: true
           cursorShape: Qt.PointingHandCursor
           onClicked: {
-            showConfirmDialog("restart", lang?.confirm?.restart || "khởi động lại");
+            showConfirmDialog("restart", lang?.confirm?.restart || "restart");
           }
         }
       }
     }
 
-    // Tắt máy - Sửa theo chuẩn CustomRectangle
+    // Shutdown - updated to CustomRectangle style
     Item {
       Layout.fillWidth: true
       Layout.preferredHeight: ScalerService.s(60)
@@ -517,7 +517,7 @@ Rectangle {
           hoverEnabled: true
           cursorShape: Qt.PointingHandCursor
           onClicked: {
-            showConfirmDialog("shutdown", lang?.confirm?.shutdown || "tắt máy");
+            showConfirmDialog("shutdown", lang?.confirm?.shutdown || "shutdown");
           }
         }
       }

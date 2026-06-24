@@ -368,6 +368,40 @@ Item {
     } catch (e) {}
   }
 
+  property var minimizedWindows: ({})
+
+  function minimizeWindow(window) {
+    try {
+      if (!window || !window.id)
+        return;
+      minimizedWindows[window.id] = window.workspaceId;
+      Hyprland.dispatch(`movetoworkspacesilent special:minimized address:0x${window.id}`);
+    } catch (e) {}
+  }
+
+  function restoreWindow(window) {
+    try {
+      if (!window || !window.id)
+        return;
+      var ws = minimizedWindows[window.id];
+      if (ws !== undefined && ws !== null && ws >= 1) {
+        Hyprland.dispatch(`movetoworkspacesilent ${ws} address:0x${window.id}`);
+      } else {
+        Hyprland.dispatch(`movetoworkspacesilent ${focusedWorkspaceId} address:0x${window.id}`);
+      }
+      delete minimizedWindows[window.id];
+    } catch (e) {}
+  }
+
+  function maximizeWindow(window) {
+    try {
+      if (!window || !window.id)
+        return;
+      Hyprland.dispatch(`focuswindow address:0x${window.id}`);
+      Hyprland.dispatch("fullscreen 1");
+    } catch (e) {}
+  }
+
   function logout() {
     try {
       Quickshell.execDetached(["hyprctl", "dispatch", "exit"]);

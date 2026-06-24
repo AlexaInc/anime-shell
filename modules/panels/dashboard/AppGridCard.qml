@@ -36,8 +36,8 @@ Item {
     GridLayout {
       anchors.fill: parent
       anchors.margins: ScalerService.s(20)
-      columns: 3
-      rows: 3
+      columns: Settings.dashboard.appGridColumns
+      rows: Math.ceil(Settings.dashboard.appGrid.length / Settings.dashboard.appGridColumns)
       columnSpacing: ScalerService.s(15)
       rowSpacing: ScalerService.s(15)
 

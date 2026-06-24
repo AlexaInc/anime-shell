@@ -32,7 +32,7 @@ ColumnLayout {
       }
     }
     font {
-      family: "ComicShannsMono Nerd Font"
+      family: "Noto Sans"
       pixelSize: ScalerService.s(18)
       bold: true
     }
@@ -166,7 +166,7 @@ ColumnLayout {
             width: ScalerService.s(40)
             horizontalAlignment: Text.AlignLeft
             font {
-              family: "ComicShannsMono Nerd Font"
+              family: "Noto Sans"
               pixelSize: ScalerService.s(12)  // Đã sửa từ: panelManager.fullsetting ? 16 : 12
               bold: true
             }

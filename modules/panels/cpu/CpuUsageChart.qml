@@ -63,7 +63,7 @@ Item {
             ctx.strokeStyle = theme.button.border;
             ctx.lineWidth = ScalerService.s(1);
             ctx.globalAlpha = 0.6; // Có thể giảm opacity để nhìn nhẹ nhàng hơn
-            ctx.font = ScalerService.s(17) + "px 'ComicShannsMono Nerd Font'";
+            ctx.font = ScalerService.s(17) + "px 'Noto Sans'";
             ctx.fillStyle = theme.primary.foreground;
             ctx.textAlign = "right";
             ctx.textBaseline = "middle";
@@ -197,7 +197,7 @@ Item {
                 var currentX = paddingLeft + chartWidth;
                 var currentY = points[points.length - 1].y;
 
-                ctx.font = ScalerService.s(15) + "px 'ComicShannsMono Nerd Font'";
+                ctx.font = ScalerService.s(15) + "px 'Noto Sans'";
                 ctx.fillText(currentUsage.toFixed(1) + "%", currentX + ScalerService.s(5), currentY - ScalerService.s(8));
               }
             }

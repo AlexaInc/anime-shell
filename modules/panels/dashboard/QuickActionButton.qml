@@ -35,7 +35,7 @@ Rectangle {
       text: "?"
       color: theme.primary.dim_foreground
       font.pixelSize: ScalerService.s(24)
-      font.family: "ComicShannsMono Nerd Font"
+      font.family: "Noto Sans"
       visible: parent.status !== Image.Ready
     }
   }

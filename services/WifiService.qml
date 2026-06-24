@@ -9,11 +9,11 @@ Item {
   property bool wifiEnabled: true
   property string connectedWifi: "Not connected"
   property bool isScanning: false
-  property string openSsid: ""     // SSID đang mở hộp mật khẩu
+  property string openSsid: ""     // SSID with open password box
   property bool userTyping: false  // true khi đang nhập password
   property bool enabled: false
-  property string connectionError: ""  // Lỗi kết nối
-  property string currentPassword: ""  // Mật khẩu hiện tại đang được lấy
+  property string connectionError: ""  // Connection error
+  property string currentPassword: ""  // Current password being retrieved
   property string requestedSsid: ""    // SSID đang yêu cầu lấy password
 
   // =============================
@@ -85,7 +85,7 @@ Item {
     stderr: StdioCollector {
       onStreamFinished: {
         if (this.text && this.text.includes("Error")) {
-          wifiManager.connectionError = "Mật khẩu không đúng hoặc không thể kết nối";
+          wifiManager.connectionError = "Wrong password or unable to connect";
           forgetPassword(wifiManager.requestedSsid);
         }
       }
@@ -153,7 +153,7 @@ Item {
   }
 
   function getSavedPassword(ssid) {
-    // Lấy mật khẩu từ NetworkManager
+    // Get password from NetworkManager
     wifiManager.requestedSsid = ssid;
     getPasswordProcess.command = ["nmcli", "-s", "-g", "802-11-wireless-security.psk", "connection", "show", ssid];
     getPasswordProcess.running = true;

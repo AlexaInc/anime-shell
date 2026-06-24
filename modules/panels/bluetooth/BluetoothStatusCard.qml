@@ -29,7 +29,7 @@ Rectangle {
         text: adapter?.enabled ? (lang?.bluetooth?.enabled || "Bluetooth đang bật") : (lang?.bluetooth?.disabled || "Bluetooth đang tắt")
         color: adapter?.enabled ? theme.button.text : theme.primary.dim_foreground
         font.pixelSize: ScalerService.s(20)
-        font.family: "ComicShannsMono Nerd Font"
+        font.family: "Noto Sans"
         font.bold: true
 
         Behavior on color {
@@ -40,10 +40,10 @@ Rectangle {
       }
 
       Text {
-        text: `${connectedCount} ` + (lang?.bluetooth?.devices_connected || "thiết bị đã kết nối")
+        text: `${connectedCount} ` + (lang?.bluetooth?.devices_connected || "devices connected")
         color: theme.primary.dim_foreground
         font.pixelSize: ScalerService.s(16)
-        font.family: "ComicShannsMono Nerd Font"
+        font.family: "Noto Sans"
         visible: adapter?.enabled || false
       }
     }

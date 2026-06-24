@@ -68,7 +68,6 @@ Item {
         }
       }
 
-      // Tab 3: Fonts
       Loader {
         active: root.currentTab === 3
         source: "./appearance/Fonts.qml"
@@ -80,92 +79,35 @@ Item {
       }
 
       // Tab 4: Icons
-      ColumnLayout {
-        width: parent.width
-        spacing: ScalerService.s(20)
-
-        Text {
-          text: lang?.appearance?.icons || "Icons"
-          color: theme.primary.foreground
-          font {
-            family: "ComicShannsMono Nerd Font"
-            pixelSize: ScalerService.s(24)
-            bold: true
-          }
-        }
-
-        Rectangle {
-          Layout.fillWidth: true
-          height: ScalerService.s(1)
-          color: theme.primary.foreground
-          opacity: 0.3
-        }
-
-        // Icons settings content
-        Text {
-          text: "Icons settings content"
-          color: theme.primary.foreground
-          font.pixelSize: ScalerService.s(14)
+      Loader {
+        active: root.currentTab === 4
+        source: "./appearance/Icons.qml"
+        onLoaded: {
+          item.visible = Qt.binding(function () {
+              return root.currentTab === 4;
+          });
         }
       }
 
       // Tab 5: Effects
-      ColumnLayout {
-        width: parent.width
-        spacing: ScalerService.s(20)
-
-        Text {
-          text: lang?.appearance?.effects || "Effects"
-          color: theme.primary.foreground
-          font {
-            family: "ComicShannsMono Nerd Font"
-            pixelSize: ScalerService.s(24)
-            bold: true
-          }
-        }
-
-        Rectangle {
-          Layout.fillWidth: true
-          height: ScalerService.s(1)
-          color: theme.primary.foreground
-          opacity: 0.3
-        }
-
-        // Effects settings content
-        Text {
-          text: "Effects settings content"
-          color: theme.primary.foreground
-          font.pixelSize: ScalerService.s(14)
+      Loader {
+        active: root.currentTab === 5
+        source: "./appearance/Effects.qml"
+        onLoaded: {
+          item.visible = Qt.binding(function () {
+              return root.currentTab === 5;
+          });
         }
       }
 
-      // Tab 6: Dashboard
-      ColumnLayout {
-        width: parent.width
-        spacing: ScalerService.s(20)
-
-        Text {
-          text: lang?.appearance?.layout || "Layout"
-          color: theme.primary.foreground
-          font {
-            family: "ComicShannsMono Nerd Font"
-            pixelSize: ScalerService.s(24)
-            bold: true
-          }
-        }
-
-        Rectangle {
-          Layout.fillWidth: true
-          height: ScalerService.s(1)
-          color: theme.primary.foreground
-          opacity: 0.3
-        }
-
-        // Layout settings content
-        Text {
-          text: "Layout settings content"
-          color: theme.primary.foreground
-          font.pixelSize: ScalerService.s(14)
+      // Tab 6: Layout
+      Loader {
+        active: root.currentTab === 6
+        source: "./appearance/Layout.qml"
+        onLoaded: {
+          item.visible = Qt.binding(function () {
+              return root.currentTab === 6;
+          });
         }
       }
 
@@ -173,36 +115,6 @@ Item {
       Com.Wallpapers {
         Layout.fillWidth: true
         Layout.fillHeight: true
-      }
-
-      // Tab 8: Advanced (nếu cần)
-      ColumnLayout {
-        width: parent.width
-        spacing: ScalerService.s(20)
-
-        Text {
-          text: "Advanced"
-          color: theme.primary.foreground
-          font {
-            family: "ComicShannsMono Nerd Font"
-            pixelSize: ScalerService.s(24)
-            bold: true
-          }
-        }
-
-        Rectangle {
-          Layout.fillWidth: true
-          height: ScalerService.s(1)
-          color: theme.primary.foreground
-          opacity: 0.3
-        }
-
-        // Advanced settings content
-        Text {
-          text: "Advanced settings content"
-          color: theme.primary.foreground
-          font.pixelSize: ScalerService.s(14)
-        }
       }
     }
   }

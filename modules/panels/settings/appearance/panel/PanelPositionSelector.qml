@@ -44,7 +44,7 @@ ColumnLayout {
           text: root.lang?.appearance?.top || "Top"
           color: Settings.bar.position === "top" ? theme.button.text : theme.primary.foreground
           font {
-            family: "ComicShannsMono Nerd Font"
+            family: "Noto Sans"
             pixelSize: ScalerService.s(14)
           }
           Layout.alignment: Qt.AlignHCenter
@@ -94,7 +94,7 @@ ColumnLayout {
           text: root.lang?.appearance?.bottom || "Bottom"
           color: Settings.bar.position === "bottom" ? theme.button.text : theme.primary.foreground
           font {
-            family: "ComicShannsMono Nerd Font"
+            family: "Noto Sans"
             pixelSize: ScalerService.s(14)
           }
           Layout.alignment: Qt.AlignHCenter
@@ -144,7 +144,7 @@ ColumnLayout {
           text: root.lang?.appearance?.left || "Left"
           color: Settings.bar.position === "left" ? theme.button.text : theme.primary.foreground
           font {
-            family: "ComicShannsMono Nerd Font"
+            family: "Noto Sans"
             pixelSize: ScalerService.s(14)
           }
           Layout.alignment: Qt.AlignVCenter
@@ -186,7 +186,7 @@ ColumnLayout {
           text: root.lang?.appearance?.right || "Right"
           color: Settings.bar.position === "right" ? theme.button.text : theme.primary.foreground
           font {
-            family: "ComicShannsMono Nerd Font"
+            family: "Noto Sans"
             pixelSize: ScalerService.s(14)
           }
           Layout.alignment: Qt.AlignVCenter

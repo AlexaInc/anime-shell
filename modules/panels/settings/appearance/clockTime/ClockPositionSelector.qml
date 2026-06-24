@@ -24,7 +24,7 @@ Item {
         text: lang.appearance?.clock_position_label || "Vị trí đồng hồ:"
         color: theme.primary.foreground
         font {
-          family: "ComicShannsMono Nerd Font"
+          family: "Noto Sans"
           pixelSize: ScalerService.s(18)
           bold: true
         }
@@ -196,7 +196,7 @@ Item {
             "top": "Trên cùng giữa",
             "topRight": "Trên cùng bên phải",
             "left": "Bên trái giữa",
-            "center": "Chính giữa màn hình",
+            "center": "Center of screen",
             "right": "Bên phải giữa",
             "bottomLeft": "Dưới cùng bên trái",
             "bottom": "Dưới cùng giữa",
@@ -206,7 +206,7 @@ Item {
         }
         color: theme.primary.foreground
         font {
-          family: "ComicShannsMono Nerd Font"
+          family: "Noto Sans"
           pixelSize: ScalerService.s(18)
         }
       }

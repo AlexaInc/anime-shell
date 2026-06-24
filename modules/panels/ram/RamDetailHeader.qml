@@ -11,7 +11,7 @@ Item {
   CustomText{
     anchors.centerIn: parent
 
-    name: lang?.ram?.panel_title || "Quản lí Ram"
+    name: lang?.ram?.panel_title || "RAM Manager"
     size: "large"
     isBold: true
     opacity: root.animationProgress > 0.1 ? 1 : 0

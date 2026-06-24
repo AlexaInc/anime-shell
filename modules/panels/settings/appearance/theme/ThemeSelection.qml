@@ -10,10 +10,10 @@ RowLayout {
   spacing: ScalerService.s(12)
 
   Text {
-    text: lang.appearance?.theme_label || "Chủ đề:"
+    text: lang.appearance?.theme_label || "Theme:"
     color: theme.primary.foreground
     font {
-      family: "ComicShannsMono Nerd Font"
+      family: "Noto Sans"
       pixelSize: ScalerService.s(16)
     }
     Layout.preferredWidth: ScalerService.s(150)

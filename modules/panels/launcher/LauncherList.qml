@@ -188,7 +188,7 @@ Rectangle {
 
     CustomText{
       visible: container.apps.length === 0
-      name: "Không có kết quả"
+      name: "No results"
       anchors.centerIn: parent
 
     }

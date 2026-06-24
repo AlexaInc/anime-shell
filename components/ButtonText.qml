@@ -9,7 +9,7 @@ Rectangle {
   property string size: "normal"  // xs | small | normal | large | xl
   property bool hovered: false
   property color textColor: theme.button.text
-  property string fontFamily: "ComicShannsMono Nerd Font"
+  property string fontFamily: "Noto Sans"
 
   radius: ScalerService.s(8)
 

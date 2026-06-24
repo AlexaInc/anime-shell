@@ -27,14 +27,14 @@ Rectangle {
       text: lang?.wifi?.disabled || "WiFi đang tắt"
       font.pixelSize: ScalerService.s(18)
       color: theme.primary.foreground
-      font.family: "ComicShannsMono Nerd Font"
+      font.family: "Noto Sans"
     }
 
     Text {
       text: lang?.wifi?.turn_on || "Bật WiFi để xem mạng khả dụng"
       font.pixelSize: ScalerService.s(14)
       color: theme.primary.dim_foreground
-      font.family: "ComicShannsMono Nerd Font"
+      font.family: "Noto Sans"
     }
   }
 }

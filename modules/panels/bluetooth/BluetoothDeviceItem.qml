@@ -84,7 +84,7 @@ Rectangle {
         text: modelData?.name || lang?.bluetooth?.no_devices || "Unknown Device"
         color: theme.primary.foreground
         font.pixelSize: ScalerService.s(16)
-        font.family: "ComicShannsMono Nerd Font"
+        font.family: "Noto Sans"
         font.weight: Font.Medium
         elide: Text.ElideRight
         Layout.fillWidth: true
@@ -110,7 +110,7 @@ Rectangle {
           return theme.primary.dim_foreground;
         }
         font.pixelSize: ScalerService.s(12)
-        font.family: "ComicShannsMono Nerd Font"
+        font.family: "Noto Sans"
       }
     }
 
@@ -228,7 +228,7 @@ Rectangle {
               try {
                 modelData.pair();
               } catch (error) {
-                delegateRoot.pairError(lang?.bluetooth?.pair_error || "Không thể ghép nối với thiết bị");
+                delegateRoot.pairError(lang?.bluetooth?.pair_error || "Unable to pair with device");
               }
             }
           }

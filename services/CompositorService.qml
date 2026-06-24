@@ -201,6 +201,46 @@ Singleton {
     }
   }
 
+  function focusWindow(window) {
+    if (backend && backend.focusWindow) {
+      backend.focusWindow(window);
+    } else {
+      console.log("Compositor", "No backend available for window focus");
+    }
+  }
+
+  function closeWindow(window) {
+    if (backend && backend.closeWindow) {
+      backend.closeWindow(window);
+    } else {
+      console.log("Compositor", "No backend available for closing windows");
+    }
+  }
+
+  function minimizeWindow(window) {
+    if (backend && backend.minimizeWindow) {
+      backend.minimizeWindow(window);
+    } else {
+      console.log("Compositor", "No backend available for minimizing windows");
+    }
+  }
+
+  function restoreWindow(window) {
+    if (backend && backend.restoreWindow) {
+      backend.restoreWindow(window);
+    } else {
+      console.log("Compositor", "No backend available for restoring windows");
+    }
+  }
+
+  function maximizeWindow(window) {
+    if (backend && backend.maximizeWindow) {
+      backend.maximizeWindow(window);
+    } else {
+      console.log("Compositor", "No backend available for maximizing windows");
+    }
+  }
+
   function shutdown() {
     Quickshell.execDetached(["sh", "-c", "systemctl poweroff || loginctl poweroff"]);
   }

@@ -36,7 +36,7 @@ Item {
         Layout.fillWidth: true
         spacing: ScalerService.s(10)
 
-        // Tiêu đề
+        // Header
         HeaderSettings {
           name: "Language Region"
           opacity: root.animationProgress > 0.1 ? 1 : 0
@@ -66,7 +66,7 @@ Item {
         spacing: ScalerService.s(10)
 
         CustomText {
-          name: lang.general?.language_label || "Ngôn ngữ:"
+          name: lang.general?.language_label || "Language:"
           size: "small"
           opacity: root.animationProgress > 0.3 ? 1 : 0
           Behavior on opacity {
@@ -233,6 +233,11 @@ Item {
               code: "sk",
               name: "Slovenčina",
               flagImg: "slovakia"
+            },
+            {
+              code: "si",
+              name: "සිංහල",
+              flagImg: "sri_lanka"
             },
             ]
 

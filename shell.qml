@@ -26,6 +26,19 @@ ShellRoot {
   property var theme: ThemeService.theme
   property var lang: LanguageService.translations
 
+  Shortcut {
+    sequence: "Alt+Tab"
+    onActivated: loaderService.windowSwitcher.cycle(true)
+  }
+  Shortcut {
+    sequence: "Alt+Shift+Tab"
+    onActivated: loaderService.windowSwitcher.cycle(false)
+  }
+  Shortcut {
+    sequence: "Meta+Tab"
+    onActivated: loaderService.windowSwitcher.cycle(true)
+  }
+
   function showConfirmDialog(action, actionLabel) {
     confirmDialog.show(action, actionLabel);
   }

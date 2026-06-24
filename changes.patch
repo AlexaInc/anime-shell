@@ -1,0 +1,4425 @@
+diff --git a/README.md b/README.md
+index ab95a3b..d22e3ca 100644
+--- a/README.md
++++ b/README.md
+@@ -49,7 +49,7 @@
+ #### Full setup with dotfiles
+ ```bash
+ cd ~
+-git clone https://github.com/mailong2401/dotfiles-hyprland
++git clone https://github.com/hansaka/dotfiles-hyprland
+ cd dotfiles-hyprland
+ chmod +x setup.sh
+ ./setup.sh
+@@ -69,7 +69,7 @@ yay -S quickshell-git cava sysstat qt6-5compat ttf-comicshannsmono-nerd ttf-mate
+ ### 2. Clone Cartoon Shell
+ ```bash
+ # Clone to QuickShell config directory
+-git clone https://github.com/mailong2401/cartoon-shell.git \
++git clone https://github.com/hansaka/cartoon-shell.git \
+     ~/.config/quickshell/cartoon-shell
+ 
+ cd ~/.config/quickshell/cartoon-shell
+@@ -99,10 +99,10 @@ echo "quickshell --path ~/.config/quickshell/cartoon-shell" \
+ 
+ ## Star History
+ 
+-<a href="https://www.star-history.com/?repos=mailong2401%2Fcartoon-shell&type=date&legend=top-left">
++<a href="https://www.star-history.com/?repos=hansaka%2Fcartoon-shell&type=date&legend=top-left">
+  <picture>
+-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=mailong2401/cartoon-shell&type=date&theme=dark&legend=top-left" />
+-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=mailong2401/cartoon-shell&type=date&legend=top-left" />
+-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=mailong2401/cartoon-shell&type=date&legend=top-left" />
++   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=hansaka/cartoon-shell&type=date&theme=dark&legend=top-left" />
++   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=hansaka/cartoon-shell&type=date&legend=top-left" />
++   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=hansaka/cartoon-shell&type=date&legend=top-left" />
+  </picture>
+ </a>
+diff --git a/assets/i18n/en.json b/assets/i18n/en.json
+index 069d4ac..a840f92 100644
+--- a/assets/i18n/en.json
++++ b/assets/i18n/en.json
+@@ -45,7 +45,30 @@
+     "notification_label": "Notifications:",
+     "notification_system": "Show system notifications",
+     "notification_sound": "Notification sounds",
+-    "notification_performance": "Performance notifications"
++    "notification_performance": "Performance notifications",
++    "date_time": "Date & Time",
++    "session": "Session",
++    "behavior": "Behavior",
++    "notifications": "Notifications",
++    "privacy": "Privacy",
++    "time_format": "24-hour format",
++    "show_seconds": "Show seconds",
++    "clock_widget": "Enable clock widget",
++    "ntp_sync": "Network time sync",
++    "lock_on_suspend": "Lock screen on suspend",
++    "lock_on_idle": "Lock screen when idle",
++    "auto_login": "Autostart shell on login",
++    "restore_session": "Restore previous session",
++    "show_animations": "Show animations",
++    "click_outside_close": "Click outside to close panels",
++    "hover_effects": "Enable hover effects",
++    "performance_mode": "Performance mode (reduce effects)",
++    "notifications_enabled": "Enable notification popups",
++    "do_not_disturb": "Do not disturb",
++    "notification_timeout": "Notification timeout (ms)",
++    "blur_panels": "Blur panel backgrounds",
++    "lock_timeout": "Screen lock timeout (seconds)",
++    "disable_network_geolocation": "Disable network geolocation"
+   },
+   "appearance": {
+     "title": "Appearance",
+@@ -57,7 +80,18 @@
+     "position_top": "Top",
+     "position_bottom": "Bottom",
+     "clock_position_label": "Clock Position:",
+-    "panel_height_label": "Panel Height:"
++    "panel_height_label": "Panel Height:",
++    "icons": "Icons",
++    "effects": "Effects",
++    "layout": "Layout",
++    "icon_theme": "Icon theme",
++    "icon_preview": "Preview",
++    "panel_transparency": "Panel transparency",
++    "blur_effects": "Blur effects",
++    "animations": "UI animations",
++    "floating_effects": "Floating background effects",
++    "dashboard_columns": "Dashboard app grid columns",
++    "bar_labels": "Show bar stats labels"
+   },
+   "system": {
+     "application": "Application",
+@@ -229,5 +263,35 @@
+     "locationPlaceholder": "Search for a city...",
+     "searchButton": "🔍",
+     "searchingButton": "⏳"
++  },
++  "audio": {
++    "output_device": "Output device",
++    "mute_on_startup": "Mute on startup",
++    "enable_mic": "Enable microphone"
++  },
++  "performance": {
++    "performance_mode": "Performance mode",
++    "reduce_animations": "Reduce animations",
++    "update_interval": "Fast stats update (500ms)"
++  },
++  "shortcuts": {
++    "hint": "Click Edit to manage your custom shortcuts. Default Hyprland shortcuts are shown above for reference.",
++    "add": "Add shortcut",
++    "reset": "Reset",
++    "edit": "Edit",
++    "done": "Done",
++    "custom": "Custom Shortcuts"
++  },
++  "desktop_shortcuts": {
++    "title": "Desktop Shortcuts"
++  },
++  "window_switcher": {
++    "title": "Window Switcher",
++    "hint": "Alt+Tab: cycle, Enter: focus, Esc: close",
++    "minimize": "Min",
++    "close": "Close",
++    "focus": "Focus",
++    "cancel": "Cancel",
++    "restore": "Restore"
+   }
+ }
+\ No newline at end of file
+diff --git a/commons/Settings.qml b/commons/Settings.qml
+index 1917bf9..5ab98c2 100644
+--- a/commons/Settings.qml
++++ b/commons/Settings.qml
+@@ -17,6 +17,7 @@ Singleton {
+   readonly property alias weather: adapter.weather
+   readonly property alias bar: adapter.bar
+   readonly property alias dashboard: adapter.dashboard
++  readonly property alias shortcuts: adapter.shortcuts
+ 
+   signal settingsLoaded
+   signal settingsSaved
+@@ -75,12 +76,30 @@ Singleton {
+     property Weather weather: Weather {}
+     property Bar bar: Bar {}
+     property Dashboard dashboard: Dashboard {}
++    property Shortcuts shortcuts: Shortcuts {}
++  }
++
++  component Shortcuts: JsonObject {
++    property var bindings: [
++    {"key": "SUPER + RETURN", "action": "Open Terminal"},
++    {"key": "SUPER + Q", "action": "Close Window"},
++    {"key": "SUPER + M", "action": "Exit Hyprland"},
++    {"key": "SUPER + E", "action": "File Manager"},
++    {"key": "SUPER + SPACE", "action": "Toggle Launcher"},
++    {"key": "SUPER + D", "action": "Toggle Dashboard"},
++    {"key": "ALT + TAB", "action": "Toggle Window Switcher"}
++    ]
+   }
+ 
+   component Dashboard: JsonObject {
+-    property string fullname: "long"
++    property string fullname: "hansaka"
+     property string urlAvatar: ""
+-    property string username: "mailong2401"
++    property string username: "hansaka"
++    property int appGridColumns: 3
++    property var desktopShortcuts: [
++    {"name": "firefox", "exec": "firefox"},
++    {"name": "kitty", "exec": "kitty"}
++    ]
+     property var appGrid: [
+     {"name" : "firefox"},
+     {"name" : "firefox"},
+@@ -96,6 +115,7 @@ Singleton {
+ 
+   component Bar: JsonObject {
+     property string position: "top"
++    property bool showLabels: true
+     property var ram: {
+       "style" : 1,
+       "active": true
+@@ -126,6 +146,7 @@ Singleton {
+     property string timeFormat: "24h"
+     property bool enableWidget: true
+     property string positionWidget: "top"
++    property bool showSeconds: false
+   }
+ 
+   component Weather: JsonObject {
+@@ -142,19 +163,46 @@ Singleton {
+     property int radius2: 16
+     property int radius3: 8
+     property bool enableBorder: false
+-    // Thêm các properties cho dynamic theme
++    // Additional properties for dynamic theme
+     property bool dynamic: false
+     property string light: "light"
+     property string dark: "dark"
+     property string matugenType: "scheme-tonal-spot"
+-    property string font: "ComicShannsMono Nerd Font"
++    property string font: "Noto Sans"
++
++    // Icons / Effects / Layout
++    property string iconTheme: "default"
++    property bool panelTransparency: true
++    property bool animations: true
++    property bool blurEffects: true
++    property bool floatingEffects: false
+   }
+ 
+   component General: JsonObject {
+-    property string lang: "vi"
++    property string lang: "en"
+     property real screenHeight: 1080
+     property real screenWidth: 1920
+     property real scale: 1.0
++
++    // Behavior
++    property bool showAnimations: true
++    property bool clickOutsideToClose: true
++    property bool hoverEffects: true
++
++    // Session / Privacy
++    property bool autoLock: true
++    property bool lockOnIdle: false
++    property int lockTimeout: 300
++    property bool blurPanels: true
++
++    // Notifications
++    property bool notificationsEnabled: true
++    property bool doNotDisturb: false
++    property int notificationTimeout: 5000
++
++    // Performance
++    property bool performanceMode: false
++    property int statsUpdateInterval: 1000
+   }
+ 
+   component Wallpaper: JsonObject {
+diff --git a/components/ButtonText.qml b/components/ButtonText.qml
+index f14b0ee..aa464b4 100644
+--- a/components/ButtonText.qml
++++ b/components/ButtonText.qml
+@@ -9,7 +9,7 @@ Rectangle {
+   property string size: "normal"  // xs | small | normal | large | xl
+   property bool hovered: false
+   property color textColor: theme.button.text
+-  property string fontFamily: "ComicShannsMono Nerd Font"
++  property string fontFamily: "Noto Sans"
+ 
+   radius: ScalerService.s(8)
+ 
+diff --git a/components/HeaderSettings.qml b/components/HeaderSettings.qml
+index a28296b..8954e82 100644
+--- a/components/HeaderSettings.qml
++++ b/components/HeaderSettings.qml
+@@ -13,7 +13,7 @@ RowLayout {
+     text: name
+     color: theme.primary.foreground
+     font {
+-      family: "ComicShannsMono Nerd Font"
++      family: "Noto Sans"
+       pixelSize: ScalerService.s(24)
+       bold: true
+     }
+diff --git a/modules/bar/widget/InfoSectionVertical.qml b/modules/bar/widget/InfoSectionVertical.qml
+index 1cac066..b4a9cad 100644
+--- a/modules/bar/widget/InfoSectionVertical.qml
++++ b/modules/bar/widget/InfoSectionVertical.qml
+@@ -74,7 +74,7 @@ Item {
+           ColumnLayout {
+             spacing: ScalerService.s(1)
+             CustomText {
+-              name: `${WeatherService.dataModel.current.temp_c}°C` || "Đang tải..."
++              name: `${WeatherService.dataModel.current.temp_c}°C` || "Loading..."
+               Layout.alignment: Qt.AlignHCenter
+               size: "xs"
+             }
+diff --git a/modules/bar/widget/MediaSectionHorizontal.qml b/modules/bar/widget/MediaSectionHorizontal.qml
+index 090156c..6041c4a 100644
+--- a/modules/bar/widget/MediaSectionHorizontal.qml
++++ b/modules/bar/widget/MediaSectionHorizontal.qml
+@@ -40,7 +40,7 @@ Item {
+           id: songText
+           text: Players.mprisPlayer?.trackTitle ?? "Not Playing"
+           color: theme.primary.foreground
+-          font.family: "ComicShannsMono Nerd Font"
++          font.family: "Noto Sans"
+           font.pixelSize: ScalerService.s(16)
+ 
+           property bool needsMarquee: width > songContainer.width
+diff --git a/modules/bar/widget/MediaSectionVertical.qml b/modules/bar/widget/MediaSectionVertical.qml
+index 1ee8395..711116d 100644
+--- a/modules/bar/widget/MediaSectionVertical.qml
++++ b/modules/bar/widget/MediaSectionVertical.qml
+@@ -47,7 +47,7 @@ Item {
+               id: songTextVertical
+               text: Players.mprisPlayer?.trackTitle ?? "Not Playing"
+               color: theme.primary.foreground
+-              font.family: "ComicShannsMono Nerd Font"
++              font.family: "Noto Sans"
+               font.pixelSize: ScalerService.s(12)
+               width: parent.width
+ 
+@@ -91,7 +91,7 @@ Item {
+           Text {
+             text: Players.mprisPlayer?.trackTitle
+             color: theme.primary.dim_foreground
+-            font.family: "ComicShannsMono Nerd Font"
++            font.family: "Noto Sans"
+             font.pixelSize: ScalerService.s(10)
+             width: parent.width
+             elide: Text.ElideRight
+diff --git a/modules/dialogs/ConfirmDialog.qml b/modules/dialogs/ConfirmDialog.qml
+index e0c03c2..d8c631b 100644
+--- a/modules/dialogs/ConfirmDialog.qml
++++ b/modules/dialogs/ConfirmDialog.qml
+@@ -27,6 +27,7 @@ PanelWindow {
+   }
+ 
+   exclusiveZone: 0
++  aboveWindows: true
+   visible: false
+   color: "transparent"
+ 
+@@ -109,19 +110,19 @@ PanelWindow {
+       spacing: ScalerService.s(20)
+ 
+       Text {
+-        text: lang?.confirm?.title || "Xác nhận"
++        text: lang?.confirm?.title || "Confirm"
+         color: theme.primary.foreground
+         font.pixelSize: ScalerService.s(24)
+         font.bold: true
+-        font.family: "ComicShannsMono Nerd Font"
++        font.family: "Noto Sans"
+         anchors.horizontalCenter: parent.horizontalCenter
+       }
+ 
+       Text {
+-        text: (lang?.confirm?.message || "Bạn có chắc chắn muốn {action}?").replace("{action}", pendingActionLabel)
++        text: (lang?.confirm?.message || "Are you sure you want to {action}?").replace("{action}", pendingActionLabel)
+         color: theme.primary.foreground
+         font.pixelSize: ScalerService.s(16)
+-        font.family: "ComicShannsMono Nerd Font"
++        font.family: "Noto Sans"
+         wrapMode: Text.WordWrap
+         width: parent.width
+         horizontalAlignment: Text.AlignHCenter
+@@ -141,10 +142,10 @@ PanelWindow {
+ 
+           Text {
+             anchors.centerIn: parent
+-            text: lang?.confirm?.no || "Không"
++            text: lang?.confirm?.no || "No"
+             color: theme.primary.foreground
+             font.pixelSize: ScalerService.s(18)
+-            font.family: "ComicShannsMono Nerd Font"
++            font.family: "Noto Sans"
+           }
+ 
+           MouseArea {
+@@ -166,10 +167,10 @@ PanelWindow {
+ 
+           Text {
+             anchors.centerIn: parent
+-            text: lang?.confirm?.yes || "Có"
++            text: lang?.confirm?.yes || "Yes"
+             color: mouseAreaYes.containsMouse ? "white" : theme.primary.foreground
+             font.pixelSize: ScalerService.s(18)
+-            font.family: "ComicShannsMono Nerd Font"
++            font.family: "Noto Sans"
+             font.bold: true
+           }
+ 
+diff --git a/modules/dialogs/FileDialog.qml b/modules/dialogs/FileDialog.qml
+index 2823c94..52debc4 100644
+--- a/modules/dialogs/FileDialog.qml
++++ b/modules/dialogs/FileDialog.qml
+@@ -18,7 +18,7 @@ PanelWindow {
+   property var theme: ThemeService.theme
+   property url selectedFile: ""
+   property int gridSize: ScalerService.s(100)  // Kích thước mỗi item
+-  property string currentPath: "file:///home/long/"
++  property string currentPath: "file:///home/hansaka/"
+   signal fileOpened(url fileUrl)
+ 
+   focusable: true
+@@ -192,7 +192,7 @@ PanelWindow {
+   function environmentVariable(name) {
+     // Simple function to get env var - you might need to implement this properly
+     switch(name) {
+-      case "USER": return "long"
++      case "USER": return "hansaka"
+       default: return ""
+     }
+   }
+diff --git a/modules/dialogs/open_file/SearchFile.qml b/modules/dialogs/open_file/SearchFile.qml
+index 4d6c7a7..2060683 100644
+--- a/modules/dialogs/open_file/SearchFile.qml
++++ b/modules/dialogs/open_file/SearchFile.qml
+@@ -27,11 +27,11 @@ Rectangle {
+     TextField {
+       id: searchField
+       Layout.fillWidth: true
+-      placeholderText: "Tìm kiếm thư mục..."
++      placeholderText: "Search folder..."
+       palette.text: theme.primary.foreground       // màu chữ chính
+       palette.placeholderText: theme.primary.dim_foreground  // sửa thành dim_foreground
+       font.pixelSize: ScalerService.s(14)
+-      font.family: "ComicShannsMono Nerd Font"
++      font.family: "Noto Sans"
+       text: root.currentPath.toString().replace("file://", "")
+       background: Rectangle {
+         color: "transparent"
+diff --git a/modules/dialogs/open_file/StatusBar.qml b/modules/dialogs/open_file/StatusBar.qml
+index a7628bc..98813e2 100644
+--- a/modules/dialogs/open_file/StatusBar.qml
++++ b/modules/dialogs/open_file/StatusBar.qml
+@@ -46,12 +46,12 @@ Rectangle {
+ 
+           TextField {
+             Layout.fillWidth: true
+-            placeholderText: "Tìm kiếm thư mục..."
++            placeholderText: "Search folder..."
+             text: root.selectedFile.toString().replace("file://", "")
+             palette.text: theme.primary.foreground       // màu chữ chính
+             palette.placeholderText: theme.primary.dim_foreground  // sửa thành dim_foreground
+             font.pixelSize: ScalerService.s(14)
+-            font.family: "ComicShannsMono Nerd Font"
++            font.family: "Noto Sans"
+             background: Rectangle {
+               color: "transparent"
+             }
+@@ -112,11 +112,11 @@ Rectangle {
+ 
+           TextField {
+             Layout.fillWidth: true
+-            placeholderText: "Tìm kiếm thư mục..."
++            placeholderText: "Search folder..."
+             palette.text: theme.primary.foreground       // màu chữ chính
+             palette.placeholderText: theme.primary.dim_foreground  // sửa thành dim_foreground
+             font.pixelSize: ScalerService.s(14)
+-            font.family: "ComicShannsMono Nerd Font"
++            font.family: "Noto Sans"
+             background: Rectangle {
+               color: "transparent"
+             }
+diff --git a/modules/panels/battery/BatteryDetailPanel.qml b/modules/panels/battery/BatteryDetailPanel.qml
+index b7d6e94..cb4b0cc 100644
+--- a/modules/panels/battery/BatteryDetailPanel.qml
++++ b/modules/panels/battery/BatteryDetailPanel.qml
+@@ -45,7 +45,7 @@ PanelWindow {
+       // Header
+       Text {
+         text: "🔋 Battery Details"
+-        font.family: "ComicShannsMono Nerd Font"
++        font.family: "Noto Sans"
+         color: theme.primary.foreground
+         font.bold: true
+         font.pixelSize: ScalerService.s(16)
+diff --git a/modules/panels/battery/BatteryPanel.qml b/modules/panels/battery/BatteryPanel.qml
+index 3a5c048..a78ac9d 100644
+--- a/modules/panels/battery/BatteryPanel.qml
++++ b/modules/panels/battery/BatteryPanel.qml
+@@ -150,7 +150,7 @@ Item {
+ 
+       Text {
+         text: "🔋 Battery Monitor"
+-        font.family: "ComicShannsMono Nerd Font"
++        font.family: "Noto Sans"
+         color: textColor
+         font.bold: true
+         font.pointSize: ScalerService.s(14)
+diff --git a/modules/panels/bluetooth/BluetoothDeviceItem.qml b/modules/panels/bluetooth/BluetoothDeviceItem.qml
+index 266c117..7b2d583 100644
+--- a/modules/panels/bluetooth/BluetoothDeviceItem.qml
++++ b/modules/panels/bluetooth/BluetoothDeviceItem.qml
+@@ -84,7 +84,7 @@ Rectangle {
+         text: modelData?.name || lang?.bluetooth?.no_devices || "Unknown Device"
+         color: theme.primary.foreground
+         font.pixelSize: ScalerService.s(16)
+-        font.family: "ComicShannsMono Nerd Font"
++        font.family: "Noto Sans"
+         font.weight: Font.Medium
+         elide: Text.ElideRight
+         Layout.fillWidth: true
+@@ -110,7 +110,7 @@ Rectangle {
+           return theme.primary.dim_foreground;
+         }
+         font.pixelSize: ScalerService.s(12)
+-        font.family: "ComicShannsMono Nerd Font"
++        font.family: "Noto Sans"
+       }
+     }
+ 
+@@ -228,7 +228,7 @@ Rectangle {
+               try {
+                 modelData.pair();
+               } catch (error) {
+-                delegateRoot.pairError(lang?.bluetooth?.pair_error || "Không thể ghép nối với thiết bị");
++                delegateRoot.pairError(lang?.bluetooth?.pair_error || "Unable to pair with device");
+               }
+             }
+           }
+diff --git a/modules/panels/bluetooth/BluetoothDeviceList.qml b/modules/panels/bluetooth/BluetoothDeviceList.qml
+index 3075061..ac9389d 100644
+--- a/modules/panels/bluetooth/BluetoothDeviceList.qml
++++ b/modules/panels/bluetooth/BluetoothDeviceList.qml
+@@ -55,9 +55,9 @@ Rectangle {
+             if (!adapter?.enabled)
+             return lang?.bluetooth?.disabled || "Bluetooth đã tắt";
+             if (adapter?.discovering && deviceList.count === 0)
+-            return "🔍 " + (lang?.bluetooth?.searching || "Đang tìm kiếm thiết bị...");
++            return "🔍 " + (lang?.bluetooth?.searching || "Searching for devices...");
+             if (deviceList.count === 0)
+-            return lang?.bluetooth?.no_devices || "Không có thiết bị nào";
++            return lang?.bluetooth?.no_devices || "No devices found";
+             return "";
+           }
+           color: theme.primary.dim_foreground
+diff --git a/modules/panels/bluetooth/BluetoothPanel.qml b/modules/panels/bluetooth/BluetoothPanel.qml
+index a6b826d..37ffa0f 100644
+--- a/modules/panels/bluetooth/BluetoothPanel.qml
++++ b/modules/panels/bluetooth/BluetoothPanel.qml
+@@ -203,7 +203,7 @@ PanelWindow {
+           }
+ 
+           Text {
+-            text: lang?.bluetooth?.turn_on || "Bật Bluetooth để kết nối với thiết bị"
++            text: lang?.bluetooth?.turn_on || "Turn on Bluetooth to connect to devices"
+             color: theme.primary.dim_foreground
+             font.pixelSize: ScalerService.s(12)
+             anchors.horizontalCenter: parent.horizontalCenter
+diff --git a/modules/panels/bluetooth/BluetoothStatusCard.qml b/modules/panels/bluetooth/BluetoothStatusCard.qml
+index 4b0467c..f09c236 100644
+--- a/modules/panels/bluetooth/BluetoothStatusCard.qml
++++ b/modules/panels/bluetooth/BluetoothStatusCard.qml
+@@ -29,7 +29,7 @@ Rectangle {
+         text: adapter?.enabled ? (lang?.bluetooth?.enabled || "Bluetooth đang bật") : (lang?.bluetooth?.disabled || "Bluetooth đang tắt")
+         color: adapter?.enabled ? theme.button.text : theme.primary.dim_foreground
+         font.pixelSize: ScalerService.s(20)
+-        font.family: "ComicShannsMono Nerd Font"
++        font.family: "Noto Sans"
+         font.bold: true
+ 
+         Behavior on color {
+@@ -40,10 +40,10 @@ Rectangle {
+       }
+ 
+       Text {
+-        text: `${connectedCount} ` + (lang?.bluetooth?.devices_connected || "thiết bị đã kết nối")
++        text: `${connectedCount} ` + (lang?.bluetooth?.devices_connected || "devices connected")
+         color: theme.primary.dim_foreground
+         font.pixelSize: ScalerService.s(16)
+-        font.family: "ComicShannsMono Nerd Font"
++        font.family: "Noto Sans"
+         visible: adapter?.enabled || false
+       }
+     }
+diff --git a/modules/panels/cpu/CpuTaskManager.qml b/modules/panels/cpu/CpuTaskManager.qml
+index f1a575a..f5c9563 100644
+--- a/modules/panels/cpu/CpuTaskManager.qml
++++ b/modules/panels/cpu/CpuTaskManager.qml
+@@ -292,7 +292,7 @@ Item {
+ 
+           Text {
+             text: lang.ram.loading.message
+-            font.family: "ComicShannsMono Nerd Font"
++            font.family: "Noto Sans"
+             color: theme.primary.dim_foreground
+             font.pixelSize: ScalerService.s(14)
+           }
+diff --git a/modules/panels/cpu/CpuUsageChart.qml b/modules/panels/cpu/CpuUsageChart.qml
+index a4f38f6..dc153b7 100644
+--- a/modules/panels/cpu/CpuUsageChart.qml
++++ b/modules/panels/cpu/CpuUsageChart.qml
+@@ -63,7 +63,7 @@ Item {
+             ctx.strokeStyle = theme.button.border;
+             ctx.lineWidth = ScalerService.s(1);
+             ctx.globalAlpha = 0.6; // Có thể giảm opacity để nhìn nhẹ nhàng hơn
+-            ctx.font = ScalerService.s(17) + "px 'ComicShannsMono Nerd Font'";
++            ctx.font = ScalerService.s(17) + "px 'Noto Sans'";
+             ctx.fillStyle = theme.primary.foreground;
+             ctx.textAlign = "right";
+             ctx.textBaseline = "middle";
+@@ -197,7 +197,7 @@ Item {
+                 var currentX = paddingLeft + chartWidth;
+                 var currentY = points[points.length - 1].y;
+ 
+-                ctx.font = ScalerService.s(15) + "px 'ComicShannsMono Nerd Font'";
++                ctx.font = ScalerService.s(15) + "px 'Noto Sans'";
+                 ctx.fillText(currentUsage.toFixed(1) + "%", currentX + ScalerService.s(5), currentY - ScalerService.s(8));
+               }
+             }
+diff --git a/modules/panels/dashboard/AppGridCard.qml b/modules/panels/dashboard/AppGridCard.qml
+index 3b8036e..21a472a 100644
+--- a/modules/panels/dashboard/AppGridCard.qml
++++ b/modules/panels/dashboard/AppGridCard.qml
+@@ -36,8 +36,8 @@ Item {
+     GridLayout {
+       anchors.fill: parent
+       anchors.margins: ScalerService.s(20)
+-      columns: 3
+-      rows: 3
++      columns: Settings.dashboard.appGridColumns
++      rows: Math.ceil(Settings.dashboard.appGrid.length / Settings.dashboard.appGridColumns)
+       columnSpacing: ScalerService.s(15)
+       rowSpacing: ScalerService.s(15)
+ 
+diff --git a/modules/panels/dashboard/AppIcon.qml b/modules/panels/dashboard/AppIcon.qml
+index d855432..e895acb 100644
+--- a/modules/panels/dashboard/AppIcon.qml
++++ b/modules/panels/dashboard/AppIcon.qml
+@@ -45,7 +45,7 @@ Rectangle {
+       text: "?"
+       color: theme.primary.dim_foreground
+       font.pixelSize: ScalerService.s(24)
+-      font.family: "ComicShannsMono Nerd Font"
++      font.family: "Noto Sans"
+       visible: parent.status !== Image.Ready
+     }
+   }
+diff --git a/modules/panels/dashboard/DashboardPanel.qml b/modules/panels/dashboard/DashboardPanel.qml
+index 974ab9c..485e58e 100644
+--- a/modules/panels/dashboard/DashboardPanel.qml
++++ b/modules/panels/dashboard/DashboardPanel.qml
+@@ -13,6 +13,9 @@ PanelWindow {
+   implicitHeight: ScalerService.s(600)
+ 
+   property real animationProgress: 0
++
++  signal confirmRequested(string action, string actionLabel)
++
+   PackageService{
+     id: packageService
+     simplePackage: true
+@@ -117,6 +120,7 @@ PanelWindow {
+ 
+           Com.ListQuickActionButton {
+             animationProgress: root.animationProgress
++            onConfirmRequested: (action, actionLabel) => root.confirmRequested(action, actionLabel)
+           }
+         }
+ 
+@@ -190,9 +194,15 @@ PanelWindow {
+             }
+           }
+ 
+-          // Right side: File Browser
++          // Right side: File Browser and Desktop Shortcuts
+           Com.FileBrowserCard {
+-            Layout.preferredWidth: ScalerService.s(300)
++            Layout.preferredWidth: ScalerService.s(220)
++            Layout.fillHeight: true
++            animationProgress: root.animationProgress
++          }
++
++          Com.DesktopShortcutsCard {
++            Layout.preferredWidth: ScalerService.s(220)
+             Layout.fillHeight: true
+             animationProgress: root.animationProgress
+           }
+diff --git a/modules/panels/dashboard/FileItem.qml b/modules/panels/dashboard/FileItem.qml
+index 250a5db..8b9be8e 100644
+--- a/modules/panels/dashboard/FileItem.qml
++++ b/modules/panels/dashboard/FileItem.qml
+@@ -38,6 +38,9 @@ Rectangle {
+     CustomText {
+       name: root.label
+       isBold: mouseArea.containsMouse
++      Layout.fillWidth: true
++      wrapMode: Text.WordWrap
++      maximumLineCount: 2
+       opacity: root.animationProgress > root.revealThreshold + 0.05 ? 1 : 0
+     }
+ 
+diff --git a/modules/panels/dashboard/ListQuickActionButton.qml b/modules/panels/dashboard/ListQuickActionButton.qml
+index 1a5571e..39c6a44 100644
+--- a/modules/panels/dashboard/ListQuickActionButton.qml
++++ b/modules/panels/dashboard/ListQuickActionButton.qml
+@@ -11,6 +11,12 @@ ColumnLayout {
+   Layout.preferredWidth: ScalerService.s(90)
+   spacing: ScalerService.s(15)
+   property real animationProgress: 0
++
++  signal confirmRequested(string action, string actionLabel)
++  function showConfirmDialog(action, actionLabel) {
++    confirmRequested(action, actionLabel);
++  }
++
+   RowLayout {
+     spacing: ScalerService.s(15)
+     Item {
+@@ -53,7 +59,7 @@ ColumnLayout {
+           hoverEnabled: true
+           cursorShape: Qt.PointingHandCursor
+ 
+-          onClicked: {}
++          onClicked: showConfirmDialog("logout", lang?.confirm?.logout || "logout")
+         }
+       }
+     }
+@@ -97,7 +103,7 @@ ColumnLayout {
+           hoverEnabled: true
+           cursorShape: Qt.PointingHandCursor
+ 
+-          onClicked: {}
++          onClicked: showConfirmDialog("sleep", lang?.confirm?.sleep || "sleep")
+         }
+       }
+     }
+@@ -143,7 +149,7 @@ ColumnLayout {
+           hoverEnabled: true
+           cursorShape: Qt.PointingHandCursor
+ 
+-          onClicked: {}
++          onClicked: showConfirmDialog("restart", lang?.confirm?.restart || "restart")
+         }
+       }
+     }
+@@ -186,7 +192,7 @@ ColumnLayout {
+           hoverEnabled: true
+           cursorShape: Qt.PointingHandCursor
+ 
+-          onClicked: {}
++          onClicked: showConfirmDialog("shutdown", lang?.confirm?.shutdown || "shutdown")
+         }
+       }
+     }
+diff --git a/modules/panels/dashboard/MediaButton.qml b/modules/panels/dashboard/MediaButton.qml
+index dcecbc5..20c05c4 100644
+--- a/modules/panels/dashboard/MediaButton.qml
++++ b/modules/panels/dashboard/MediaButton.qml
+@@ -22,7 +22,7 @@ Rectangle {
+     text: root.icon
+     color: root.backgroundColor === "transparent" ? "#8899bb" : "white"
+     font.pixelSize: root.size * 0.5
+-    font.family: "ComicShannsMono Nerd Font"
++    font.family: "Noto Sans"
+   }
+ 
+   MouseArea {
+diff --git a/modules/panels/dashboard/MediaPlayerCard.qml b/modules/panels/dashboard/MediaPlayerCard.qml
+index 9967baf..be72936 100644
+--- a/modules/panels/dashboard/MediaPlayerCard.qml
++++ b/modules/panels/dashboard/MediaPlayerCard.qml
+@@ -120,7 +120,7 @@ Item {
+             Text {
+               anchors.centerIn: parent
+               text: "No Art"
+-              font.family: "ComicShannsMono Nerd Font"
++              font.family: "Noto Sans"
+               font.pixelSize: ScalerService.s(14)
+               color: theme.primary.dim_foreground
+               visible: albumImage.status !== Image.Ready
+@@ -150,7 +150,7 @@ Item {
+               }
+             }
+             text: root.mprisPlayer ? (root.mprisPlayer.trackTitle || "No song playing") : "No song playing"
+-            font.family: "ComicShannsMono Nerd Font"
++            font.family: "Noto Sans"
+             font.pixelSize: ScalerService.s(20)
+             font.bold: true
+             color: theme.primary.foreground
+diff --git a/modules/panels/dashboard/QuickActionButton.qml b/modules/panels/dashboard/QuickActionButton.qml
+index 9950f8c..8598724 100644
+--- a/modules/panels/dashboard/QuickActionButton.qml
++++ b/modules/panels/dashboard/QuickActionButton.qml
+@@ -35,7 +35,7 @@ Rectangle {
+       text: "?"
+       color: theme.primary.dim_foreground
+       font.pixelSize: ScalerService.s(24)
+-      font.family: "ComicShannsMono Nerd Font"
++      font.family: "Noto Sans"
+       visible: parent.status !== Image.Ready
+     }
+   }
+diff --git a/modules/panels/dashboard/SocialIcon.qml b/modules/panels/dashboard/SocialIcon.qml
+index 61eabd8..dd666e0 100644
+--- a/modules/panels/dashboard/SocialIcon.qml
++++ b/modules/panels/dashboard/SocialIcon.qml
+@@ -60,7 +60,7 @@ Item {
+       onClicked: {
+         linkProcess.command = ["xdg-open", linkSocial]
+         linkProcess.startDetached()
+-        // Bạn có thể thêm hành động khi click ở đây
++        // You can add click actions here
+       }
+     }
+   }
+diff --git a/modules/panels/dashboard/UserProfileCard.qml b/modules/panels/dashboard/UserProfileCard.qml
+index 57ab491..b57be68 100644
+--- a/modules/panels/dashboard/UserProfileCard.qml
++++ b/modules/panels/dashboard/UserProfileCard.qml
+@@ -126,7 +126,7 @@ Item {
+             anchors.fill: parent
+             source: Settings.dashboard.urlAvatar
+             ? Settings.dashboard.urlAvatar
+-            : "/home/long/Downloads/111423869.png"
++            : "/home/hansaka/Downloads/111423869.png"
+             fillMode: Image.PreserveAspectCrop
+             smooth: true
+           }
+@@ -173,11 +173,14 @@ Item {
+       // User Name
+       Label {
+         Layout.alignment: Qt.AlignHCenter
++        width: parent.width - ScalerService.s(20)
+         text: Settings.dashboard.fullname
+         color: theme.primary.foreground
+         font.pixelSize: ScalerService.s(40)
+         font.bold: true
+-        font.family: "ComicShannsMono Nerd Font"
++        font.family: "Noto Sans"
++        elide: Text.ElideRight
++        horizontalAlignment: Text.AlignHCenter
+         opacity: root.animationProgress > 0.15 ? 1 : 0
+         Behavior on opacity {
+           NumberAnimation {
+@@ -189,10 +192,13 @@ Item {
+       // User Handle
+       Label {
+         Layout.alignment: Qt.AlignHCenter
++        width: parent.width - ScalerService.s(20)
+         text: Settings.dashboard.username
+         color: theme.primary.foreground
+         font.pixelSize: ScalerService.s(24)
+-        font.family: "ComicShannsMono Nerd Font"
++        font.family: "Noto Sans"
++        elide: Text.ElideRight
++        horizontalAlignment: Text.AlignHCenter
+         opacity: root.animationProgress > 0.2 ? 1 : 0
+         Behavior on opacity {
+           NumberAnimation {
+diff --git a/modules/panels/dashboard/WeatherCard.qml b/modules/panels/dashboard/WeatherCard.qml
+index e7df176..f8884fe 100644
+--- a/modules/panels/dashboard/WeatherCard.qml
++++ b/modules/panels/dashboard/WeatherCard.qml
+@@ -77,7 +77,7 @@ Item {
+           spacing: ScalerService.s(5)
+ 
+           CustomText {
+-            name: `${WeatherService.dataModel.current.temp_c}°C` || "Đang tải..."
++            name: `${WeatherService.dataModel.current.temp_c}°C` || "Loading..."
+             Layout.alignment: Qt.AlignVCenter
+             size: "2xl"
+             isBold: true
+diff --git a/modules/panels/flag/FlagItem.qml b/modules/panels/flag/FlagItem.qml
+index 557cad6..15fd5b7 100644
+--- a/modules/panels/flag/FlagItem.qml
++++ b/modules/panels/flag/FlagItem.qml
+@@ -59,6 +59,10 @@ Rectangle {
+       size: "small"
+       isBold: isSelected
+       Layout.alignment: Qt.AlignHCenter
++      width: parent.width - ScalerService.s(8)
++      horizontalAlignment: Text.AlignHCenter
++      wrapMode: Text.WordWrap
++      maximumLineCount: 2
+       opacity: 0
+ 
+       SequentialAnimation on opacity {
+diff --git a/modules/panels/flag/FlagPanel.qml b/modules/panels/flag/FlagPanel.qml
+index 1b343f8..6e00177 100644
+--- a/modules/panels/flag/FlagPanel.qml
++++ b/modules/panels/flag/FlagPanel.qml
+@@ -52,6 +52,7 @@ PanelWindow {
+   { name: "russia", displayName: "Russia" },
+   { name: "saudi_arabia", displayName: "Saudi Arabia" },
+   { name: "slovakia", displayName: "Slovakia" },
++  { name: "sri_lanka", displayName: "Sri Lanka" },
+   { name: "spain", displayName: "Spain" },
+   { name: "sweden", displayName: "Sweden" },
+   { name: "thailand", displayName: "Thailand" },
+diff --git a/modules/panels/launcher/LauncherList.qml b/modules/panels/launcher/LauncherList.qml
+index bc109e6..746b55e 100644
+--- a/modules/panels/launcher/LauncherList.qml
++++ b/modules/panels/launcher/LauncherList.qml
+@@ -188,7 +188,7 @@ Rectangle {
+ 
+     CustomText{
+       visible: container.apps.length === 0
+-      name: "Không có kết quả"
++      name: "No results"
+       anchors.centerIn: parent
+ 
+     }
+diff --git a/modules/panels/launcher/LauncherSearch.qml b/modules/panels/launcher/LauncherSearch.qml
+index 821ee95..7e5817b 100644
+--- a/modules/panels/launcher/LauncherSearch.qml
++++ b/modules/panels/launcher/LauncherSearch.qml
+@@ -33,11 +33,11 @@ Rectangle {
+     TextField {
+       id: searchField
+       Layout.fillWidth: true
+-      placeholderText: "Tìm kiếm ứng dụng..."
++      placeholderText: "Search applications..."
+       palette.text: theme.primary.foreground       // màu chữ chính
+       palette.placeholderText: theme.primary.dim_foreground  // sửa thành dim_foreground
+       font.pixelSize: ScalerService.s(14)
+-      font.family: "ComicShannsMono Nerd Font"
++      font.family: "Noto Sans"
+       background: Rectangle {
+         color: "transparent"
+       }
+diff --git a/modules/panels/launcher/Sidebar.qml b/modules/panels/launcher/Sidebar.qml
+index 46ad4c5..d27dcf2 100644
+--- a/modules/panels/launcher/Sidebar.qml
++++ b/modules/panels/launcher/Sidebar.qml
+@@ -30,7 +30,7 @@ Rectangle {
+   signal confirmRequested(string action, string actionLabel)
+ 
+   function showConfirmDialog(action, actionLabel) {
+-    // Emit signal để parent components xử lý
++    // Emit signal for parent components to handle
+     confirmRequested(action, actionLabel);
+   }
+ 
+@@ -39,7 +39,7 @@ Rectangle {
+     anchors.margins: ScalerService.s(12)
+     spacing: ScalerService.s(10)
+ 
+-    // Tiêu đề Menu
++    // Menu Title
+     Item {
+       Layout.fillWidth: true
+       Layout.preferredHeight: ScalerService.s(60)
+@@ -113,7 +113,7 @@ Rectangle {
+       }
+     }
+ 
+-    // Cài đặt
++    // Settings
+     Item {
+       Layout.fillWidth: true
+       Layout.preferredHeight: ScalerService.s(60)
+@@ -188,7 +188,7 @@ Rectangle {
+       }
+     }
+ 
+-    // Chế độ ngủ - Sửa theo chuẩn CustomRectangle
++    // Sleep - updated to CustomRectangle style
+     Item {
+       Layout.fillWidth: true
+       Layout.preferredHeight: ScalerService.s(60)
+@@ -249,13 +249,13 @@ Rectangle {
+           hoverEnabled: true
+           cursorShape: Qt.PointingHandCursor
+           onClicked: {
+-            showConfirmDialog("sleep", lang?.confirm?.sleep || "chuyển sang chế độ ngủ");
++            showConfirmDialog("sleep", lang?.confirm?.sleep || "sleep");
+           }
+         }
+       }
+     }
+ 
+-    // Khóa màn hình - Sửa theo chuẩn CustomRectangle
++    // Lock screen - updated to CustomRectangle style
+     Item {
+       Layout.fillWidth: true
+       Layout.preferredHeight: ScalerService.s(60)
+@@ -316,13 +316,13 @@ Rectangle {
+           hoverEnabled: true
+           cursorShape: Qt.PointingHandCursor
+           onClicked: {
+-            showConfirmDialog("lock", lang?.confirm?.lock || "khóa màn hình");
++            showConfirmDialog("lock", lang?.confirm?.lock || "lock screen");
+           }
+         }
+       }
+     }
+ 
+-    // Đăng xuất - Sửa theo chuẩn CustomRectangle
++    // Logout - updated to CustomRectangle style
+     Item {
+       Layout.fillWidth: true
+       Layout.preferredHeight: ScalerService.s(60)
+@@ -383,13 +383,13 @@ Rectangle {
+           hoverEnabled: true
+           cursorShape: Qt.PointingHandCursor
+           onClicked: {
+-            showConfirmDialog("logout", lang?.confirm?.logout || "đăng xuất");
++            showConfirmDialog("logout", lang?.confirm?.logout || "logout");
+           }
+         }
+       }
+     }
+ 
+-    // Khởi động lại - Sửa theo chuẩn CustomRectangle
++    // Restart - updated to CustomRectangle style
+     Item {
+       Layout.fillWidth: true
+       Layout.preferredHeight: ScalerService.s(60)
+@@ -450,13 +450,13 @@ Rectangle {
+           hoverEnabled: true
+           cursorShape: Qt.PointingHandCursor
+           onClicked: {
+-            showConfirmDialog("restart", lang?.confirm?.restart || "khởi động lại");
++            showConfirmDialog("restart", lang?.confirm?.restart || "restart");
+           }
+         }
+       }
+     }
+ 
+-    // Tắt máy - Sửa theo chuẩn CustomRectangle
++    // Shutdown - updated to CustomRectangle style
+     Item {
+       Layout.fillWidth: true
+       Layout.preferredHeight: ScalerService.s(60)
+@@ -517,7 +517,7 @@ Rectangle {
+           hoverEnabled: true
+           cursorShape: Qt.PointingHandCursor
+           onClicked: {
+-            showConfirmDialog("shutdown", lang?.confirm?.shutdown || "tắt máy");
++            showConfirmDialog("shutdown", lang?.confirm?.shutdown || "shutdown");
+           }
+         }
+       }
+diff --git a/modules/panels/music/CavaVisualizer.qml b/modules/panels/music/CavaVisualizer.qml
+index 3b8bd54..4942bc0 100644
+--- a/modules/panels/music/CavaVisualizer.qml
++++ b/modules/panels/music/CavaVisualizer.qml
+@@ -81,7 +81,7 @@ Rectangle {
+       text: !Players.mprisPlayer?.isPlaying
+       ? (lang.musicPanel?.notPlaying || "Not playing")
+       : (lang.musicPanel?.loading || "Loading...")
+-      font.family: "ComicShannsMono Nerd Font"
++      font.family: "Noto Sans"
+       font.pixelSize: ScalerService.s(14)
+       color: theme.primary.dim_foreground
+     }
+diff --git a/modules/panels/ram/RamDetailHeader.qml b/modules/panels/ram/RamDetailHeader.qml
+index cffece5..3854d8e 100644
+--- a/modules/panels/ram/RamDetailHeader.qml
++++ b/modules/panels/ram/RamDetailHeader.qml
+@@ -11,7 +11,7 @@ Item {
+   CustomText{
+     anchors.centerIn: parent
+ 
+-    name: lang?.ram?.panel_title || "Quản lí Ram"
++    name: lang?.ram?.panel_title || "RAM Manager"
+     size: "large"
+     isBold: true
+     opacity: root.animationProgress > 0.1 ? 1 : 0
+diff --git a/modules/panels/settings/Appearance.qml b/modules/panels/settings/Appearance.qml
+index 5f85caf..10ed7ad 100644
+--- a/modules/panels/settings/Appearance.qml
++++ b/modules/panels/settings/Appearance.qml
+@@ -68,7 +68,6 @@ Item {
+         }
+       }
+ 
+-      // Tab 3: Fonts
+       Loader {
+         active: root.currentTab === 3
+         source: "./appearance/Fonts.qml"
+@@ -80,92 +79,35 @@ Item {
+       }
+ 
+       // Tab 4: Icons
+-      ColumnLayout {
+-        width: parent.width
+-        spacing: ScalerService.s(20)
+-
+-        Text {
+-          text: lang?.appearance?.icons || "Icons"
+-          color: theme.primary.foreground
+-          font {
+-            family: "ComicShannsMono Nerd Font"
+-            pixelSize: ScalerService.s(24)
+-            bold: true
+-          }
+-        }
+-
+-        Rectangle {
+-          Layout.fillWidth: true
+-          height: ScalerService.s(1)
+-          color: theme.primary.foreground
+-          opacity: 0.3
+-        }
+-
+-        // Icons settings content
+-        Text {
+-          text: "Icons settings content"
+-          color: theme.primary.foreground
+-          font.pixelSize: ScalerService.s(14)
++      Loader {
++        active: root.currentTab === 4
++        source: "./appearance/Icons.qml"
++        onLoaded: {
++          item.visible = Qt.binding(function () {
++              return root.currentTab === 4;
++          });
+         }
+       }
+ 
+       // Tab 5: Effects
+-      ColumnLayout {
+-        width: parent.width
+-        spacing: ScalerService.s(20)
+-
+-        Text {
+-          text: lang?.appearance?.effects || "Effects"
+-          color: theme.primary.foreground
+-          font {
+-            family: "ComicShannsMono Nerd Font"
+-            pixelSize: ScalerService.s(24)
+-            bold: true
+-          }
+-        }
+-
+-        Rectangle {
+-          Layout.fillWidth: true
+-          height: ScalerService.s(1)
+-          color: theme.primary.foreground
+-          opacity: 0.3
+-        }
+-
+-        // Effects settings content
+-        Text {
+-          text: "Effects settings content"
+-          color: theme.primary.foreground
+-          font.pixelSize: ScalerService.s(14)
++      Loader {
++        active: root.currentTab === 5
++        source: "./appearance/Effects.qml"
++        onLoaded: {
++          item.visible = Qt.binding(function () {
++              return root.currentTab === 5;
++          });
+         }
+       }
+ 
+-      // Tab 6: Dashboard
+-      ColumnLayout {
+-        width: parent.width
+-        spacing: ScalerService.s(20)
+-
+-        Text {
+-          text: lang?.appearance?.layout || "Layout"
+-          color: theme.primary.foreground
+-          font {
+-            family: "ComicShannsMono Nerd Font"
+-            pixelSize: ScalerService.s(24)
+-            bold: true
+-          }
+-        }
+-
+-        Rectangle {
+-          Layout.fillWidth: true
+-          height: ScalerService.s(1)
+-          color: theme.primary.foreground
+-          opacity: 0.3
+-        }
+-
+-        // Layout settings content
+-        Text {
+-          text: "Layout settings content"
+-          color: theme.primary.foreground
+-          font.pixelSize: ScalerService.s(14)
++      // Tab 6: Layout
++      Loader {
++        active: root.currentTab === 6
++        source: "./appearance/Layout.qml"
++        onLoaded: {
++          item.visible = Qt.binding(function () {
++              return root.currentTab === 6;
++          });
+         }
+       }
+ 
+@@ -174,36 +116,6 @@ Item {
+         Layout.fillWidth: true
+         Layout.fillHeight: true
+       }
+-
+-      // Tab 8: Advanced (nếu cần)
+-      ColumnLayout {
+-        width: parent.width
+-        spacing: ScalerService.s(20)
+-
+-        Text {
+-          text: "Advanced"
+-          color: theme.primary.foreground
+-          font {
+-            family: "ComicShannsMono Nerd Font"
+-            pixelSize: ScalerService.s(24)
+-            bold: true
+-          }
+-        }
+-
+-        Rectangle {
+-          Layout.fillWidth: true
+-          height: ScalerService.s(1)
+-          color: theme.primary.foreground
+-          opacity: 0.3
+-        }
+-
+-        // Advanced settings content
+-        Text {
+-          text: "Advanced settings content"
+-          color: theme.primary.foreground
+-          font.pixelSize: ScalerService.s(14)
+-        }
+-      }
+     }
+   }
+ }
+diff --git a/modules/panels/settings/Audio.qml b/modules/panels/settings/Audio.qml
+index caaa2c8..62df784 100644
+--- a/modules/panels/settings/Audio.qml
++++ b/modules/panels/settings/Audio.qml
+@@ -1,44 +1,212 @@
+-// components/Settings/AudioSettings.qml
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
++import Quickshell.Services.Pipewire
+ import qs.services
++import qs.components
++import qs.commons
+ 
+ Item {
++  id: root
++
++  readonly property var defaultSink: Pipewire.defaultAudioSink
++  readonly property real currentVolume: defaultSink?.audio.volume ?? 0
++  readonly property bool isMuted: defaultSink?.audio.mute ?? false
++
+   ScrollView {
+     anchors.fill: parent
+     anchors.margins: ScalerService.s(20)
+     clip: true
++    ScrollBar.vertical.policy: ScrollBar.AsNeeded
+ 
+     ColumnLayout {
+       width: parent.width
+       spacing: ScalerService.s(20)
+ 
+-      // Tiêu đề
+-      RowLayout {
++      HeaderSettings {
++        name: lang?.settings?.audio || "Audio"
+         Layout.fillWidth: true
+-        spacing: ScalerService.s(10)
++      }
+ 
+-        // Button Nâng cao ở góc trái
++      Rectangle {
++        Layout.fillWidth: true
++        height: ScalerService.s(1)
++        color: theme.primary.foreground
++        opacity: 0.3
++      }
+ 
+-        Item {
+-          Layout.fillWidth: true
+-        }
++      // Output device card
++      Rectangle {
++        Layout.fillWidth: true
++        Layout.preferredHeight: ScalerService.s(160)
++        color: theme.primary.dim_background
++        radius: ScalerService.s(12)
++        border.color: theme.button.border
++        border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++        ColumnLayout {
++          anchors.fill: parent
++          anchors.margins: ScalerService.s(15)
++          spacing: ScalerService.s(12)
++
++          RowLayout {
++            Layout.fillWidth: true
++            spacing: ScalerService.s(10)
++
++            IconImage {
++              path: "volume/volume.png"
++              size: "large"
++            }
++
++            CustomText {
++              name: lang?.audio?.output_device || "Output device"
++              size: "small"
++              isBold: true
++              Layout.fillWidth: true
++              elide: Text.ElideRight
++              maximumLineCount: 1
++            }
++
++            CustomText {
++              name: defaultSink?.name || "Default"
++              size: "xs"
++              textColor: theme.primary.dim_foreground
++              elide: Text.ElideRight
++              maximumLineCount: 1
++              Layout.maximumWidth: ScalerService.s(140)
++            }
++          }
++
++          RowLayout {
++            Layout.fillWidth: true
++            spacing: ScalerService.s(10)
++
++            CustomText {
++              name: Math.round(currentVolume * 100) + "%"
++              size: "small"
++              Layout.preferredWidth: ScalerService.s(50)
++            }
++
++            Slider {
++              id: volumeSlider
++              Layout.fillWidth: true
++              from: 0
++              to: 1
++              value: currentVolume
++              onMoved: {
++                if (defaultSink && defaultSink.audio) {
++                  defaultSink.audio.volume = value;
++                }
++              }
++              background: Rectangle {
++                x: volumeSlider.leftPadding
++                y: volumeSlider.topPadding + volumeSlider.availableHeight / 2 - height / 2
++                implicitWidth: 200
++                implicitHeight: ScalerService.s(6)
++                width: volumeSlider.availableWidth
++                height: implicitHeight
++                radius: ScalerService.s(3)
++                color: theme.primary.dim_background
++
++                Rectangle {
++                  width: volumeSlider.visualPosition * parent.width
++                  height: parent.height
++                  color: theme.button.text
++                  radius: ScalerService.s(3)
++                }
++              }
++              handle: Rectangle {
++                x: volumeSlider.leftPadding + volumeSlider.visualPosition * (volumeSlider.availableWidth - width)
++                y: volumeSlider.topPadding + volumeSlider.availableHeight / 2 - height / 2
++                implicitWidth: ScalerService.s(18)
++                implicitHeight: ScalerService.s(18)
++                radius: ScalerService.s(9)
++                color: theme.button.text
++              }
++            }
+ 
+-        // Tiêu đề (được đẩy sang bên phải)
+-        Text {
+-          text: "Audio Settings"
+-          color: theme.primary.foreground
+-          font.pixelSize: ScalerService.s(24)
+-          font.bold: true
+-          font.family: "ComicShannsMono Nerd Font"
++            Rectangle {
++              Layout.preferredWidth: ScalerService.s(40)
++              Layout.preferredHeight: ScalerService.s(40)
++              radius: ScalerService.s(20)
++              color: muteMouseArea.containsMouse ? theme.button.background_select : theme.button.background
++              border.color: theme.button.border
++              border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++              IconImage {
++                path: root.isMuted ? "volume/mute.png" : "volume/volume.png"
++                size: "normal"
++                anchors.centerIn: parent
++              }
++
++              MouseArea {
++                id: muteMouseArea
++                anchors.fill: parent
++                hoverEnabled: true
++                cursorShape: Qt.PointingHandCursor
++                onClicked: {
++                  if (defaultSink && defaultSink.audio) {
++                    defaultSink.audio.mute = !defaultSink.audio.mute;
++                  }
++                }
++              }
++            }
++          }
+         }
+       }
+ 
+-      Rectangle {
++      SettingRow {
++        label: lang?.audio?.mute_on_startup || "Mute on startup"
++        value: false
++        enabled: false
++      }
++
++      SettingRow {
++        label: lang?.audio?.enable_mic || "Enable microphone"
++        value: true
++        enabled: false
++      }
++
++      Item {
++        Layout.fillHeight: true
++      }
++    }
++  }
++
++  component SettingRow: Rectangle {
++    id: settingRow
++    property string label: ""
++    property bool value: false
++    property bool enabled: true
++    signal toggled(bool value)
++
++    Layout.fillWidth: true
++    Layout.preferredHeight: ScalerService.s(56)
++    color: theme.button.background
++    radius: ScalerService.s(10)
++    border.color: theme.button.border
++    border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++    RowLayout {
++      anchors.fill: parent
++      anchors.margins: ScalerService.s(15)
++      spacing: ScalerService.s(12)
++
++      CustomText {
++        name: settingRow.label
++        size: "small"
+         Layout.fillWidth: true
+-        height: ScalerService.s(1)
+-        color: theme.primary.foreground
++        elide: Text.ElideRight
++        maximumLineCount: 1
++      }
++
++      CustomToggleSwitch {
++        adapter: settingRow.value
++        enabled: settingRow.enabled
++        onClicked: {
++          settingRow.value = !settingRow.value;
++          settingRow.toggled(settingRow.value);
++        }
+       }
+     }
+   }
+diff --git a/modules/panels/settings/General.qml b/modules/panels/settings/General.qml
+index 3528495..3acbdea 100644
+--- a/modules/panels/settings/General.qml
++++ b/modules/panels/settings/General.qml
+@@ -1,4 +1,3 @@
+-// components/Settings/GeneralSettings.qml
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
+@@ -6,7 +5,6 @@ import Quickshell
+ import qs.services
+ import qs.components
+ import "./general/" as Com
+-import "./appearance/" as AppCom
+ import "./" as Bar
+ 
+ Item {
+@@ -24,14 +22,6 @@ Item {
+     }
+   }
+ 
+-  // Timer để reload ngôn ngữ
+-  property Timer reloadTimer: Timer {
+-    interval: 30
+-    repeat: false
+-    onTriggered: languageLoader.loadLanguage()
+-  }
+-
+-  // Chỉ giữ lại giao diện minimal mode
+   ColumnLayout {
+     anchors.fill: parent
+     spacing: ScalerService.s(10)
+@@ -46,7 +36,6 @@ Item {
+     }
+ 
+     // Main Content Area
+-    // StackLayout for tabs
+     StackLayout {
+       Layout.fillWidth: true
+       Layout.fillHeight: true
+@@ -62,9 +51,11 @@ Item {
+           });
+         }
+       }
++
++      // Tab 1: Date & Time
+       Loader {
+         active: root.currentTab === 1
+-        source: "./appearance/Theme.qml"
++        source: "./general/DateTime.qml"
+         onLoaded: {
+           item.visible = Qt.binding(function () {
+               return root.currentTab === 1;
+@@ -72,193 +63,47 @@ Item {
+         }
+       }
+ 
+-      // Tab 1: Date & Time
+-      ScrollView {
+-        clip: true
+-        ScrollBar.vertical.policy: ScrollBar.AsNeeded
+-
+-        ColumnLayout {
+-          width: parent.width
+-          spacing: ScalerService.s(20)
+-          anchors.margins: ScalerService.s(20)
+-
+-          Text {
+-            text: lang?.general?.date_time || "Date & Time"
+-            color: theme.primary.foreground
+-            font {
+-              family: "ComicShannsMono Nerd Font"
+-              pixelSize: ScalerService.s(24)
+-              bold: true
+-            }
+-            Layout.alignment: Qt.AlignLeft
+-          }
+-
+-          Rectangle {
+-            Layout.fillWidth: true
+-            height: ScalerService.s(1)
+-            color: theme.primary.foreground
+-            opacity: 0.3
+-          }
+-
+-          // Nội dung Date & Time ở đây
+-          Text {
+-            text: "Date & Time settings content"
+-            color: theme.primary.foreground
+-            Layout.alignment: Qt.AlignLeft
+-            font.pixelSize: ScalerService.s(14)
+-          }
+-        }
+-      }
+-
+       // Tab 2: Session
+-      ScrollView {
+-        clip: true
+-        ScrollBar.vertical.policy: ScrollBar.AsNeeded
+-
+-        ColumnLayout {
+-          width: parent.width
+-          spacing: ScalerService.s(20)
+-          anchors.margins: ScalerService.s(20)
+-
+-          Text {
+-            text: lang?.general?.session || "Session"
+-            color: theme.primary.foreground
+-            font {
+-              family: "ComicShannsMono Nerd Font"
+-              pixelSize: ScalerService.s(24)
+-              bold: true
+-            }
+-            Layout.alignment: Qt.AlignLeft
+-          }
+-
+-          Rectangle {
+-            Layout.fillWidth: true
+-            height: ScalerService.s(1)
+-            color: theme.primary.foreground
+-            opacity: 0.3
+-          }
+-
+-          // Nội dung Session ở đây
+-          Text {
+-            text: "Session settings content"
+-            color: theme.primary.foreground
+-            Layout.alignment: Qt.AlignLeft
+-            font.pixelSize: ScalerService.s(14)
+-          }
++      Loader {
++        active: root.currentTab === 2
++        source: "./general/Session.qml"
++        onLoaded: {
++          item.visible = Qt.binding(function () {
++              return root.currentTab === 2;
++          });
+         }
+       }
+ 
+       // Tab 3: Behavior
+-      ScrollView {
+-        clip: true
+-        ScrollBar.vertical.policy: ScrollBar.AsNeeded
+-
+-        ColumnLayout {
+-          width: parent.width
+-          spacing: ScalerService.s(20)
+-          anchors.margins: ScalerService.s(20)
+-
+-          Text {
+-            text: lang?.general?.behavior || "Behavior"
+-            color: theme.primary.foreground
+-            font {
+-              family: "ComicShannsMono Nerd Font"
+-              pixelSize: ScalerService.s(24)
+-              bold: true
+-            }
+-            Layout.alignment: Qt.AlignLeft
+-          }
+-
+-          Rectangle {
+-            Layout.fillWidth: true
+-            height: ScalerService.s(1)
+-            color: theme.primary.foreground
+-            opacity: 0.3
+-          }
+-
+-          // Nội dung Behavior ở đây
+-          Text {
+-            text: "Behavior settings content"
+-            color: theme.primary.foreground
+-            Layout.alignment: Qt.AlignLeft
+-            font.pixelSize: ScalerService.s(14)
+-          }
++      Loader {
++        active: root.currentTab === 3
++        source: "./general/Behavior.qml"
++        onLoaded: {
++          item.visible = Qt.binding(function () {
++              return root.currentTab === 3;
++          });
+         }
+       }
+ 
+       // Tab 4: Notifications
+-      ScrollView {
+-        clip: true
+-        ScrollBar.vertical.policy: ScrollBar.AsNeeded
+-
+-        ColumnLayout {
+-          width: parent.width
+-          spacing: ScalerService.s(20)
+-          anchors.margins: ScalerService.s(20)
+-
+-          Text {
+-            text: lang?.general?.notifications || "Notifications"
+-            color: theme.primary.foreground
+-            font {
+-              family: "ComicShannsMono Nerd Font"
+-              pixelSize: ScalerService.s(24)
+-              bold: true
+-            }
+-            Layout.alignment: Qt.AlignLeft
+-          }
+-
+-          Rectangle {
+-            Layout.fillWidth: true
+-            height: ScalerService.s(1)
+-            color: theme.primary.foreground
+-            opacity: 0.3
+-          }
+-
+-          // Nội dung Notifications ở đây
+-          Text {
+-            text: "Notifications settings content"
+-            color: theme.primary.foreground
+-            Layout.alignment: Qt.AlignLeft
+-            font.pixelSize: ScalerService.s(14)
+-          }
++      Loader {
++        active: root.currentTab === 4
++        source: "./general/Notifications.qml"
++        onLoaded: {
++          item.visible = Qt.binding(function () {
++              return root.currentTab === 4;
++          });
+         }
+       }
+ 
+       // Tab 5: Privacy
+-      ScrollView {
+-        clip: true
+-        ScrollBar.vertical.policy: ScrollBar.AsNeeded
+-
+-        ColumnLayout {
+-          width: parent.width
+-          spacing: ScalerService.s(20)
+-          anchors.margins: ScalerService.s(20)
+-
+-          Text {
+-            text: lang?.general?.privacy || "Privacy"
+-            color: theme.primary.foreground
+-            font {
+-              family: "ComicShannsMono Nerd Font"
+-              pixelSize: ScalerService.s(24)
+-              bold: true
+-            }
+-            Layout.alignment: Qt.AlignLeft
+-          }
+-
+-          Rectangle {
+-            Layout.fillWidth: true
+-            height: ScalerService.s(1)
+-            color: theme.primary.foreground
+-            opacity: 0.3
+-          }
+-
+-          // Nội dung Privacy ở đây
+-          Text {
+-            text: "Privacy settings content"
+-            color: theme.primary.foreground
+-            Layout.alignment: Qt.AlignLeft
+-            font.pixelSize: ScalerService.s(14)
+-          }
++      Loader {
++        active: root.currentTab === 5
++        source: "./general/Privacy.qml"
++        onLoaded: {
++          item.visible = Qt.binding(function () {
++              return root.currentTab === 5;
++          });
+         }
+       }
+     }
+diff --git a/modules/panels/settings/Network.qml b/modules/panels/settings/Network.qml
+index 1bacaf8..6046260 100644
+--- a/modules/panels/settings/Network.qml
++++ b/modules/panels/settings/Network.qml
+@@ -1,65 +1,207 @@
+-// components/Settings/NetworkSettings.qml
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
++import Quickshell.Io
+ import qs.services
++import qs.components
++import qs.commons
+ 
+ Item {
++  id: root
++
++  WifiService {
++    id: wifiManager
++  }
++
++  NetworkService {
++    id: networkService
++  }
++
+   ScrollView {
+     anchors.fill: parent
+     anchors.margins: ScalerService.s(20)
+     clip: true
++    ScrollBar.vertical.policy: ScrollBar.AsNeeded
+ 
+     ColumnLayout {
+-      width: parent.width - ScalerService.s(40)
++      width: parent.width
+       spacing: ScalerService.s(20)
+ 
+-      Text {
+-        text: "Network Settings"
+-        color: theme.primary.foreground
+-        font.pixelSize: ScalerService.s(24)
+-        font.bold: true
+-        font.family: "ComicShannsMono Nerd Font"
+-        Layout.topMargin: ScalerService.s(10)
++      HeaderSettings {
++        name: lang?.settings?.network || "Network"
++        Layout.fillWidth: true
+       }
+ 
+       Rectangle {
+         Layout.fillWidth: true
+         height: ScalerService.s(1)
+         color: theme.primary.foreground
++        opacity: 0.3
+       }
+ 
+-      // Thông báo phần đã bị xóa
++      // Status card
+       Rectangle {
+         Layout.fillWidth: true
+-        Layout.preferredHeight: ScalerService.s(100)
+-        radius: ScalerService.s(8)
++        Layout.preferredHeight: ScalerService.s(80)
++        color: theme.primary.dim_background
++        radius: ScalerService.s(12)
++        border.color: theme.button.border
++        border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++        RowLayout {
++          anchors.fill: parent
++          anchors.margins: ScalerService.s(15)
++          spacing: ScalerService.s(12)
++
++          IconImage {
++            path: networkService.connectedWifi !== "Disconnected" ? "wifi/wifi.png" : "wifi/no-wifi.png"
++            size: "large"
++          }
++
++          ColumnLayout {
++            Layout.fillWidth: true
++            spacing: ScalerService.s(4)
++
++            CustomText {
++              name: networkService.connectedWifi !== "Disconnected" ? networkService.connectedWifi : (lang?.wifi?.disconnected || "Disconnected")
++              size: "small"
++              isBold: true
++              Layout.fillWidth: true
++              elide: Text.ElideRight
++              maximumLineCount: 1
++            }
++
++            CustomText {
++              name: networkService.signal_current > 0 ? (lang?.wifi?.signal || "Signal") + ": " + networkService.signal_current + "%" : ""
++              size: "xs"
++              textColor: theme.primary.dim_foreground
++              visible: networkService.connectedWifi !== "Disconnected"
++            }
++          }
++
++          CustomToggleSwitch {
++            adapter: wifiManager.wifiEnabled
++            onClicked: wifiManager.toggleWifi()
++          }
++        }
++      }
++
++      // WiFi list
++      CustomText {
++        name: lang?.wifi?.available_networks || "Available networks"
++        size: "small"
++        isBold: true
++      }
++
++      Repeater {
++        model: wifiManager.wifiList
++
++        Rectangle {
++          Layout.fillWidth: true
++          Layout.preferredHeight: ScalerService.s(56)
++          color: theme.button.background
++          radius: ScalerService.s(10)
++          border.color: theme.button.border
++          border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++          RowLayout {
++            anchors.fill: parent
++            anchors.margins: ScalerService.s(12)
++            spacing: ScalerService.s(10)
++
++            IconImage {
++              path: modelData.signal > 70 ? "wifi/wifi.png" : (modelData.signal > 40 ? "wifi/wifi_2.png" : "wifi/wifi_1.png")
++              size: "normal"
++            }
++
++            CustomText {
++              name: modelData.ssid
++              size: "small"
++              Layout.fillWidth: true
++              elide: Text.ElideRight
++              maximumLineCount: 1
++            }
++
++            CustomText {
++              name: modelData.security === "Open" ? "Open" : "Secured"
++              size: "xs"
++              textColor: theme.primary.dim_foreground
++            }
++
++            Rectangle {
++              Layout.preferredWidth: ScalerService.s(70)
++              Layout.preferredHeight: ScalerService.s(32)
++              radius: ScalerService.s(8)
++              color: connectMouseArea.containsMouse ? theme.button.background_select : theme.button.text
++              visible: modelData.ssid !== wifiManager.connectedWifi
++
++              CustomText {
++                anchors.centerIn: parent
++                name: lang?.wifi?.connect || "Connect"
++                size: "xs"
++                textColor: theme.primary.background
++                isBold: true
++              }
++
++              MouseArea {
++                id: connectMouseArea
++                anchors.fill: parent
++                hoverEnabled: true
++                cursorShape: Qt.PointingHandCursor
++                onClicked: {
++                  if (modelData.security === "Open" || modelData.saved_password !== "--") {
++                    wifiManager.connectToWifi(modelData.ssid, modelData.saved_password !== "--" ? modelData.saved_password : "");
++                  } else {
++                    wifiManager.openSsid = modelData.ssid;
++                  }
++                }
++              }
++            }
++          }
++        }
++      }
++
++      // Password box
++      Rectangle {
++        Layout.fillWidth: true
++        Layout.preferredHeight: ScalerService.s(60)
+         color: theme.primary.background
+-        border.color: theme.normal.black
+-        border.width: ScalerService.s(1)
++        radius: ScalerService.s(10)
++        border.color: theme.button.border
++        border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++        visible: wifiManager.openSsid !== ""
+ 
+-        Column {
+-          anchors.centerIn: parent
++        RowLayout {
++          anchors.fill: parent
++          anchors.margins: ScalerService.s(12)
+           spacing: ScalerService.s(10)
+ 
+-          Text {
+-            text: "Network Settings Content"
++          TextField {
++            id: passwordField
++            Layout.fillWidth: true
++            placeholderText: "Password for " + wifiManager.openSsid
++            echoMode: TextInput.Password
+             color: theme.primary.foreground
+-            font.pixelSize: ScalerService.s(16)
+-            font.bold: true
+-            font.family: "ComicShannsMono Nerd Font"
++            background: Rectangle {
++              color: theme.button.background
++              radius: ScalerService.s(8)
++            }
+           }
+ 
+-          Text {
+-            text: "Network information and controls have been removed."
+-            color: theme.primary.dim_foreground
+-            font.pixelSize: ScalerService.s(12)
+-            font.family: "ComicShannsMono Nerd Font"
+-            horizontalAlignment: Text.AlignHCenter
+-            width: parent.width
++          Button {
++            text: "Connect"
++            onClicked: {
++              wifiManager.connectToWifi(wifiManager.openSsid, passwordField.text);
++              wifiManager.openSsid = "";
++              passwordField.text = "";
++            }
+           }
+         }
+       }
++
++      Item {
++        Layout.fillHeight: true
++      }
+     }
+   }
+ }
+diff --git a/modules/panels/settings/Performance.qml b/modules/panels/settings/Performance.qml
+index 63c3004..5a1ce7f 100644
+--- a/modules/panels/settings/Performance.qml
++++ b/modules/panels/settings/Performance.qml
+@@ -1,41 +1,165 @@
+-// components/Settings/[Tên]Settings.qml
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
+ import qs.services
++import qs.services.cpu
++import qs.services.ram
++import qs.components
++import qs.commons
+ 
+ Item {
++  id: root
++
++  RamService {
++    id: ramService
++    useSimpleCalculation: true
++  }
++
+   ScrollView {
+     anchors.fill: parent
+     anchors.margins: ScalerService.s(20)
+     clip: true
++    ScrollBar.vertical.policy: ScrollBar.AsNeeded
+ 
+     ColumnLayout {
+       width: parent.width
+-      spacing: ScalerService.s(15)
++      spacing: ScalerService.s(20)
+ 
+-      Text {
+-        text: "Performance Settings"
+-        color: theme.primary.foreground
+-        font.pixelSize: ScalerService.s(24)
+-        font.bold: true
+-        Layout.topMargin: ScalerService.s(10)
++      HeaderSettings {
++        name: lang?.settings?.performance || "Performance"
++        Layout.fillWidth: true
+       }
+ 
+       Rectangle {
+         Layout.fillWidth: true
+         height: ScalerService.s(1)
+         color: theme.primary.foreground
++        opacity: 0.3
++      }
++
++      // Live stats
++      Rectangle {
++        Layout.fillWidth: true
++        Layout.preferredHeight: ScalerService.s(120)
++        color: theme.primary.dim_background
++        radius: ScalerService.s(12)
++        border.color: theme.button.border
++        border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++        RowLayout {
++          anchors.fill: parent
++          anchors.margins: ScalerService.s(15)
++          spacing: ScalerService.s(20)
++
++          ColumnLayout {
++            Layout.fillWidth: true
++            spacing: ScalerService.s(4)
++
++            CustomText {
++              name: "CPU"
++              size: "small"
++              isBold: true
++            }
++            CustomText {
++              name: CpuSimpleService.cpuPercent + "%"
++              size: "large"
++              isBold: true
++              textColor: theme.button.text
++            }
++          }
++
++          Rectangle {
++            Layout.preferredWidth: ScalerService.s(1)
++            Layout.fillHeight: true
++            color: theme.button.border
++          }
++
++          ColumnLayout {
++            Layout.fillWidth: true
++            spacing: ScalerService.s(4)
++
++            CustomText {
++              name: "RAM"
++              size: "small"
++              isBold: true
++            }
++            CustomText {
++              name: ramService.memPercent + "%"
++              size: "large"
++              isBold: true
++              textColor: theme.button.text
++            }
++          }
++        }
+       }
+ 
+-      // Nội dung cài đặt cụ thể sẽ được thêm ở đây
+-      Text {
+-        text: "Cài đặt [tên mục] sẽ được hiển thị ở đây"
+-        color: theme.primary.dim_foreground
+-        font.pixelSize: ScalerService.s(14)
+-        Layout.alignment: Qt.AlignCenter
++      SettingRow {
++        label: lang?.performance?.performance_mode || "Performance mode"
++        value: Settings.general.performanceMode
++        onToggled: {
++          Settings.general.performanceMode = value;
++          Settings.appearance.animations = !value;
++          Settings.appearance.blurEffects = !value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.performance?.reduce_animations || "Reduce animations"
++        value: !Settings.appearance.animations
++        onToggled: {
++          Settings.appearance.animations = !value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.performance?.update_interval || "Fast stats update (500ms)"
++        value: Settings.general.statsUpdateInterval <= 1000
++        onToggled: {
++          Settings.general.statsUpdateInterval = value ? 500 : 1000;
++        }
++      }
++
++      Item {
+         Layout.fillHeight: true
+       }
+     }
+   }
++
++  component SettingRow: Rectangle {
++    id: settingRow
++    property string label: ""
++    property bool value: false
++    property bool enabled: true
++    signal toggled(bool value)
++
++    Layout.fillWidth: true
++    Layout.preferredHeight: ScalerService.s(56)
++    color: theme.button.background
++    radius: ScalerService.s(10)
++    border.color: theme.button.border
++    border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++    RowLayout {
++      anchors.fill: parent
++      anchors.margins: ScalerService.s(15)
++      spacing: ScalerService.s(12)
++
++      CustomText {
++        name: settingRow.label
++        size: "small"
++        Layout.fillWidth: true
++        elide: Text.ElideRight
++        maximumLineCount: 1
++      }
++
++      CustomToggleSwitch {
++        adapter: settingRow.value
++        enabled: settingRow.enabled
++        onClicked: {
++          settingRow.value = !settingRow.value;
++          settingRow.toggled(settingRow.value);
++        }
++      }
++    }
++  }
+ }
+diff --git a/modules/panels/settings/Shortcuts.qml b/modules/panels/settings/Shortcuts.qml
+index 6fdef4b..ed21020 100644
+--- a/modules/panels/settings/Shortcuts.qml
++++ b/modules/panels/settings/Shortcuts.qml
+@@ -3,8 +3,13 @@ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
+ import qs.services
++import qs.components
++import qs.commons
+ 
+ Item {
++  id: root
++  property bool editMode: false
++
+   ScrollView {
+     anchors.fill: parent
+     anchors.margins: ScalerService.s(20)
+@@ -17,15 +22,39 @@ Item {
+       spacing: ScalerService.s(20)
+ 
+       // Header
+-      Text {
+-        text: "⌨️ Hyprland Shortcuts"
+-        color: theme.primary.foreground
+-        font {
+-          family: "ComicShannsMono Nerd Font"
+-          pixelSize: ScalerService.s(24)
+-          bold: true
++      RowLayout {
++        Layout.fillWidth: true
++        spacing: ScalerService.s(12)
++
++        HeaderSettings {
++          name: lang?.settings?.shortcuts || "⌨️ Hyprland Shortcuts"
++          Layout.fillWidth: true
++        }
++
++        Rectangle {
++          Layout.preferredWidth: ScalerService.s(120)
++          Layout.preferredHeight: ScalerService.s(36)
++          color: editMouseArea.containsMouse ? theme.button.background_select : theme.button.text
++          radius: ScalerService.s(10)
++          border.color: theme.button.border
++          border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++          CustomText {
++            anchors.centerIn: parent
++            name: root.editMode ? (lang?.shortcuts?.done || "Done") : (lang?.shortcuts?.edit || "Edit")
++            size: "xs"
++            textColor: theme.primary.background
++            isBold: true
++          }
++
++          MouseArea {
++            id: editMouseArea
++            anchors.fill: parent
++            hoverEnabled: true
++            cursorShape: Qt.PointingHandCursor
++            onClicked: root.editMode = !root.editMode
++          }
+         }
+-        Layout.topMargin: ScalerService.s(10)
+       }
+ 
+       Rectangle {
+@@ -34,144 +63,241 @@ Item {
+         color: theme.primary.foreground
+       }
+ 
+-      // Basic Window Management section - remove the SUPER + J line since it's not standard
++      // Default Hyprland shortcuts (kept exactly as the original feature)
+       ShortcutCategory {
+         title: "🪟 Basic Window Management"
+         shortcuts: [
+-        {
+-          key: "SUPER + RETURN",
+-          action: "Open Terminal"
+-        },
+-        {
+-          key: "SUPER + Q",
+-          action: "Close Window"
+-        },
+-        {
+-          key: "SUPER + M",
+-          action: "Exit Hyprland"
+-        },
+-        {
+-          key: "SUPER + E",
+-          action: "File Manager"
+-        },
+-        {
+-          key: "SUPER + SPACE",
+-          action: "Toggle Launcher Panel"
+-        },
+-        {
+-          key: "SUPER + V",
+-          action: "Toggle Floating"
+-        },
+-        {
+-          key: "SUPER + F",
+-          action: "Fullscreen"
+-        },
+-        {
+-          key: "SUPER + P",
+-          action: "Pseudo Tiling"
+-        }
+-        // Removed SUPER + J since it's not defined in your config
++          { key: "SUPER + RETURN", action: "Open Terminal" },
++          { key: "SUPER + Q", action: "Close Window" },
++          { key: "SUPER + M", action: "Exit Hyprland" },
++          { key: "SUPER + E", action: "File Manager" },
++          { key: "SUPER + SPACE", action: "Toggle Launcher Panel" },
++          { key: "SUPER + V", action: "Toggle Floating" },
++          { key: "SUPER + F", action: "Fullscreen" },
++          { key: "SUPER + P", action: "Pseudo Tiling" }
+         ]
+       }
+ 
+-      // Workspace Management - fix to 1-9 (or 1-10 if you add workspace 10)
+       ShortcutCategory {
+         title: "🎨 Workspace Management"
+         shortcuts: [
+-        {
+-          key: "SUPER + 1-9",
+-          action: "Switch to Workspace 1-9"
+-        },
+-        {
+-          key: "SUPER + SHIFT + 1-9",
+-          action: "Move Window to Workspace 1-9"
+-        },
+-        {
+-          key: "SUPER + S",
+-          action: "Toggle Special Workspace (magic)"
+-        },
+-        {
+-          key: "SUPER + SHIFT + S",
+-          action: "Move Window to Special Workspace"
+-        }
++          { key: "SUPER + 1-9", action: "Switch to Workspace 1-9" },
++          { key: "SUPER + SHIFT + 1-9", action: "Move Window to Workspace 1-9" },
++          { key: "SUPER + S", action: "Toggle Special Workspace (magic)" },
++          { key: "SUPER + SHIFT + S", action: "Move Window to Special Workspace" }
+         ]
+       }
+ 
+-      // Mouse Actions - fix scroll direction
+       ShortcutCategory {
+         title: "🖱️ Mouse Actions"
+         shortcuts: [
+-        {
+-          key: "SUPER + Scroll Down",
+-          action: "Next Workspace"
+-        },
+-        {
+-          key: "SUPER + Scroll Up",
+-          action: "Previous Workspace"
+-        },
+-        {
+-          key: "SUPER + Left Click + Drag",
+-          action: "Move Window"
+-        },
+-        {
+-          key: "SUPER + Right Click + Drag",
+-          action: "Resize Window"
+-        }
++          { key: "SUPER + Scroll Down", action: "Next Workspace" },
++          { key: "SUPER + Scroll Up", action: "Previous Workspace" },
++          { key: "SUPER + Left Click + Drag", action: "Move Window" },
++          { key: "SUPER + Right Click + Drag", action: "Resize Window" }
+         ]
+       }
+ 
+-      // Add missing Dashboard and Panels section
+       ShortcutCategory {
+         title: "📊 Dashboard & Panels"
+         shortcuts: [
+-        {
+-          key: "SUPER + D",
+-          action: "Toggle Dashboard"
+-        },
+-        {
+-          key: "SUPER + L",
+-          action: "Lock Screen"
+-        },
+-        {
+-          key: "SUPER + A",
+-          action: "Toggle Calendar"
+-        },
+-        {
+-          key: "SUPER + B",
+-          action: "Toggle Bluetooth Panel"
+-        },
+-        {
+-          key: "SUPER + C",
+-          action: "Toggle CPU Monitor"
+-        },
+-        {
+-          key: "SUPER + R",
+-          action: "Toggle RAM Monitor"
+-        },
+-        {
+-          key: "SUPER + W",
+-          action: "Toggle Weather"
+-        },
+-        {
+-          key: "SUPER + I",
+-          action: "Toggle WiFi Panel"
+-        },
+-        {
+-          key: "SUPER + U",
+-          action: "Toggle Volume Mixer"
+-        },
+-        {
+-          key: "SUPER + Y",
+-          action: "Toggle Battery Info"
+-        }
++          { key: "SUPER + D", action: "Toggle Dashboard" },
++          { key: "SUPER + L", action: "Lock Screen" },
++          { key: "SUPER + A", action: "Toggle Calendar" },
++          { key: "SUPER + B", action: "Toggle Bluetooth Panel" },
++          { key: "SUPER + C", action: "Toggle CPU Monitor" },
++          { key: "SUPER + R", action: "Toggle RAM Monitor" },
++          { key: "SUPER + W", action: "Toggle Weather" },
++          { key: "SUPER + I", action: "Toggle WiFi Panel" },
++          { key: "SUPER + U", action: "Toggle Volume Mixer" },
++          { key: "SUPER + Y", action: "Toggle Battery Info" }
+         ]
+-      }      Item {
++      }
++
++      // Editable custom shortcuts section
++      Rectangle {
++        Layout.fillWidth: true
++        height: ScalerService.s(1)
++        color: theme.primary.foreground
++        opacity: 0.3
++      }
++
++      CustomText {
++        name: lang?.shortcuts?.custom || "Custom Shortcuts"
++        size: "normal"
++        isBold: true
++      }
++
++      CustomText {
++        name: lang?.shortcuts?.hint || "Click Edit to add or change your own shortcuts. These are saved to settings."
++        size: "xs"
++        textColor: theme.primary.dim_foreground
++        Layout.fillWidth: true
++      }
++
++      Repeater {
++        model: root.editMode ? Settings.shortcuts.bindings.length : 0
++
++        Rectangle {
++          Layout.fillWidth: true
++          Layout.preferredHeight: ScalerService.s(64)
++          color: theme.button.background
++          radius: ScalerService.s(10)
++          border.color: theme.button.border
++          border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++          RowLayout {
++            anchors.fill: parent
++            anchors.margins: ScalerService.s(12)
++            spacing: ScalerService.s(10)
++
++            TextField {
++              id: keyField
++              Layout.preferredWidth: ScalerService.s(180)
++              Layout.fillHeight: true
++              text: Settings.shortcuts.bindings[index].key
++              color: theme.primary.foreground
++              font.pixelSize: ScalerService.s(13)
++              font.bold: true
++              background: Rectangle {
++                color: theme.normal.blue
++                radius: ScalerService.s(8)
++              }
++              onEditingFinished: root.updateBinding(index, "key", text)
++            }
++
++            TextField {
++              id: actionField
++              Layout.fillWidth: true
++              Layout.fillHeight: true
++              text: Settings.shortcuts.bindings[index].action
++              color: theme.primary.foreground
++              font.pixelSize: ScalerService.s(14)
++              background: Rectangle {
++                color: theme.primary.dim_background
++                radius: ScalerService.s(8)
++              }
++              onEditingFinished: root.updateBinding(index, "action", text)
++            }
++
++            Rectangle {
++              Layout.preferredWidth: ScalerService.s(40)
++              Layout.fillHeight: true
++              color: removeMouseArea.containsMouse ? theme.normal.red : theme.primary.dim_background
++              radius: ScalerService.s(8)
++
++              CustomText {
++                anchors.centerIn: parent
++                name: "✕"
++                size: "small"
++                textColor: removeMouseArea.containsMouse ? "white" : theme.primary.foreground
++              }
++
++              MouseArea {
++                id: removeMouseArea
++                anchors.fill: parent
++                hoverEnabled: true
++                cursorShape: Qt.PointingHandCursor
++                onClicked: root.removeBinding(index)
++              }
++            }
++          }
++        }
++      }
++
++      RowLayout {
++        Layout.fillWidth: true
++        spacing: ScalerService.s(12)
++        visible: root.editMode
++
++        Rectangle {
++          Layout.fillWidth: true
++          Layout.preferredHeight: ScalerService.s(44)
++          color: addMouseArea.containsMouse ? theme.button.background_select : theme.button.text
++          radius: ScalerService.s(10)
++
++          CustomText {
++            anchors.centerIn: parent
++            name: lang?.shortcuts?.add || "Add shortcut"
++            size: "small"
++            textColor: theme.primary.background
++            isBold: true
++          }
++
++          MouseArea {
++            id: addMouseArea
++            anchors.fill: parent
++            hoverEnabled: true
++            cursorShape: Qt.PointingHandCursor
++            onClicked: root.addBinding()
++          }
++        }
++
++        Rectangle {
++          Layout.preferredWidth: ScalerService.s(120)
++          Layout.preferredHeight: ScalerService.s(44)
++          color: resetMouseArea.containsMouse ? theme.button.background_select : theme.button.background
++          radius: ScalerService.s(10)
++          border.color: theme.button.border
++          border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++          CustomText {
++            anchors.centerIn: parent
++            name: lang?.shortcuts?.reset || "Reset"
++            size: "small"
++          }
++
++          MouseArea {
++            id: resetMouseArea
++            anchors.fill: parent
++            hoverEnabled: true
++            cursorShape: Qt.PointingHandCursor
++            onClicked: root.resetBindings()
++          }
++        }
++      }
++
++      Item {
+         Layout.fillHeight: true
+-      } // Spacer
++      }
+     }
+   }
+ 
+-  // Shortcut Category Component
++  function updateBinding(index, field, value) {
++    var list = JSON.parse(JSON.stringify(Settings.shortcuts.bindings));
++    if (index >= 0 && index < list.length) {
++      list[index][field] = value;
++      Settings.shortcuts.bindings = list;
++    }
++  }
++
++  function removeBinding(index) {
++    var list = JSON.parse(JSON.stringify(Settings.shortcuts.bindings));
++    if (index >= 0 && index < list.length) {
++      list.splice(index, 1);
++      Settings.shortcuts.bindings = list;
++    }
++  }
++
++  function addBinding() {
++    var list = JSON.parse(JSON.stringify(Settings.shortcuts.bindings));
++    list.push({ "key": "SUPER + ?", "action": "New action" });
++    Settings.shortcuts.bindings = list;
++  }
++
++  function resetBindings() {
++    Settings.shortcuts.bindings = [
++      { "key": "SUPER + RETURN", "action": "Open Terminal" },
++      { "key": "SUPER + Q", "action": "Close Window" },
++      { "key": "SUPER + M", "action": "Exit Hyprland" },
++      { "key": "SUPER + E", "action": "File Manager" },
++      { "key": "SUPER + SPACE", "action": "Toggle Launcher Panel" },
++      { "key": "SUPER + D", "action": "Toggle Dashboard" },
++      { "key": "ALT + TAB", "action": "Toggle Window Switcher" }
++    ];
++  }
++
++  // Shortcut Category Component (kept from original)
+   component ShortcutCategory: ColumnLayout {
+     property string title: ""
+     property var shortcuts: []
+@@ -179,7 +305,6 @@ Item {
+     Layout.fillWidth: true
+     spacing: ScalerService.s(10)
+ 
+-    // Category Header
+     Rectangle {
+       Layout.fillWidth: true
+       height: ScalerService.s(50)
+@@ -188,19 +313,14 @@ Item {
+       border.width: ScalerService.s(2)
+       border.color: theme.normal.black
+ 
+-      Text {
++      CustomText {
+         anchors.centerIn: parent
+-        text: title
+-        color: theme.primary.foreground
+-        font {
+-          family: "ComicShannsMono Nerd Font"
+-          pixelSize: ScalerService.s(18)
+-          bold: true
+-        }
++        name: title
++        size: "small"
++        isBold: true
+       }
+     }
+ 
+-    // Shortcuts List
+     ColumnLayout {
+       Layout.fillWidth: true
+       spacing: ScalerService.s(8)
+@@ -221,7 +341,6 @@ Item {
+             anchors.margins: ScalerService.s(15)
+             spacing: ScalerService.s(20)
+ 
+-            // Key Badge (Left side)
+             Rectangle {
+               Layout.preferredWidth: ScalerService.s(220)
+               Layout.minimumWidth: ScalerService.s(220)
+@@ -230,30 +349,22 @@ Item {
+               color: theme.normal.blue
+               radius: ScalerService.s(8)
+ 
+-              Text {
+-                id: keyText
++              CustomText {
+                 anchors.centerIn: parent
+-                text: modelData.key
+-                color: theme.primary.background
+-                font {
+-                  family: "ComicShannsMono Nerd Font"
+-                  pixelSize: ScalerService.s(13)
+-                  bold: true
+-                }
++                name: modelData.key
++                size: "xs"
++                textColor: theme.primary.background
++                isBold: true
+               }
+             }
+ 
+-            // Action Description (Right side)
+-            Text {
+-              text: modelData.action
+-              color: theme.primary.foreground
+-              font {
+-                family: "ComicShannsMono Nerd Font"
+-                pixelSize: ScalerService.s(15)
+-              }
+-              wrapMode: Text.WordWrap
++            CustomText {
++              name: modelData.action
++              size: "small"
+               Layout.fillWidth: true
+               Layout.alignment: Qt.AlignVCenter
++              elide: Text.ElideRight
++              maximumLineCount: 2
+             }
+           }
+         }
+diff --git a/modules/panels/settings/System.qml b/modules/panels/settings/System.qml
+index 28720dd..1f2bd58 100644
+--- a/modules/panels/settings/System.qml
++++ b/modules/panels/settings/System.qml
+@@ -1,41 +1,165 @@
+-// components/Settings/[Tên]Settings.qml
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
++import Quickshell.Io
+ import qs.services
++import qs.services.cpu
++import qs.services.ram
++import qs.components
++import qs.commons
+ 
+ Item {
++  id: root
++
++  property string hostname: "Unknown"
++  property string osName: "Unknown"
++  property string kernel: "Unknown"
++  property string cpuModel: "Unknown"
++  property string ramTotal: "Unknown"
++
++  RamService {
++    id: ramService
++    useSimpleCalculation: true
++  }
++
++  Process {
++    id: systemInfoProcess
++    command: ["bash", "-c", "echo HOST=$(hostname); echo OS=$(grep '^PRETTY_NAME=' /etc/os-release | cut -d= -f2 | tr -d '\"'); echo KERNEL=$(uname -r); echo CPU=$(grep 'model name' /proc/cpuinfo | head -1 | cut -d: -f2 | sed 's/^ *//'); echo RAM=$(free -h | awk '/^Mem:/ {print $2}')"]
++    stdout: StdioCollector {
++      onStreamFinished: {
++        var lines = this.text.trim().split('\n');
++        for (var i = 0; i < lines.length; i++) {
++          var line = lines[i];
++          if (line.startsWith("HOST=")) root.hostname = line.substring(6) || "Unknown";
++          else if (line.startsWith("OS=")) root.osName = line.substring(3) || "Unknown";
++          else if (line.startsWith("KERNEL=")) root.kernel = line.substring(7) || "Unknown";
++          else if (line.startsWith("CPU=")) root.cpuModel = line.substring(4) || "Unknown";
++          else if (line.startsWith("RAM=")) root.ramTotal = line.substring(4) || "Unknown";
++        }
++      }
++    }
++    Component.onCompleted: running = true
++  }
++
+   ScrollView {
+     anchors.fill: parent
+     anchors.margins: ScalerService.s(20)
+     clip: true
++    ScrollBar.vertical.policy: ScrollBar.AsNeeded
+ 
+     ColumnLayout {
+       width: parent.width
+-      spacing: ScalerService.s(15)
++      spacing: ScalerService.s(20)
+ 
+-      Text {
+-        text: "System Settings"
+-        color: theme.primary.foreground
+-        font.pixelSize: ScalerService.s(24)
+-        font.bold: true
+-        Layout.topMargin: ScalerService.s(10)
++      HeaderSettings {
++        name: lang?.settings?.system || "System"
++        Layout.fillWidth: true
+       }
+ 
+       Rectangle {
+         Layout.fillWidth: true
+         height: ScalerService.s(1)
+         color: theme.primary.foreground
++        opacity: 0.3
++      }
++
++      InfoRow { label: "Hostname"; value: root.hostname }
++      InfoRow { label: "Operating System"; value: root.osName }
++      InfoRow { label: "Kernel"; value: root.kernel }
++      InfoRow { label: "CPU"; value: root.cpuModel }
++      InfoRow { label: "Memory"; value: root.ramTotal }
++      InfoRow { label: "Uptime"; value: UptimeService.uptimePretty }
++      InfoRow { label: "Shell"; value: "anime-shell / QuickShell" }
++
++      // Restart/Shutdown buttons
++      RowLayout {
++        Layout.fillWidth: true
++        spacing: ScalerService.s(12)
++        Layout.topMargin: ScalerService.s(10)
++
++        ActionButton {
++          Layout.fillWidth: true
++          label: lang?.system?.restart || "Restart"
++          action: "restart"
++        }
++
++        ActionButton {
++          Layout.fillWidth: true
++          label: lang?.system?.shutdown || "Shutdown"
++          action: "shutdown"
++        }
+       }
+ 
+-      // Nội dung cài đặt cụ thể sẽ được thêm ở đây
+-      Text {
+-        text: "Cài đặt System Settings sẽ được hiển thị ở đây"
+-        color: theme.primary.dim_foreground
+-        font.pixelSize: ScalerService.s(14)
+-        Layout.alignment: Qt.AlignCenter
++      Item {
+         Layout.fillHeight: true
+       }
+     }
+   }
++
++  component InfoRow: Rectangle {
++    property string label: ""
++    property string value: ""
++
++    Layout.fillWidth: true
++    Layout.preferredHeight: ScalerService.s(56)
++    color: theme.button.background
++    radius: ScalerService.s(10)
++    border.color: theme.button.border
++    border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++    RowLayout {
++      anchors.fill: parent
++      anchors.margins: ScalerService.s(15)
++      spacing: ScalerService.s(10)
++
++      CustomText {
++        name: label
++        size: "small"
++        isBold: true
++        Layout.preferredWidth: ScalerService.s(140)
++        elide: Text.ElideRight
++        maximumLineCount: 1
++      }
++
++      CustomText {
++        name: value
++        size: "small"
++        Layout.fillWidth: true
++        elide: Text.ElideRight
++        maximumLineCount: 2
++      }
++    }
++  }
++
++  component ActionButton: Rectangle {
++    id: actionButton
++    property string label: ""
++    property string action: ""
++
++    Layout.preferredHeight: ScalerService.s(48)
++    color: actionMouseArea.containsMouse ? theme.button.background_select : theme.button.text
++    radius: ScalerService.s(10)
++
++    CustomText {
++      anchors.centerIn: parent
++      name: actionButton.label
++      size: "small"
++      textColor: theme.primary.background
++      isBold: true
++    }
++
++    MouseArea {
++      id: actionMouseArea
++      anchors.fill: parent
++      hoverEnabled: true
++      cursorShape: Qt.PointingHandCursor
++      onClicked: {
++        if (actionButton.action === "restart") {
++          CompositorService.reboot();
++        } else if (actionButton.action === "shutdown") {
++          CompositorService.shutdown();
++        }
++      }
++    }
++  }
+ }
+diff --git a/modules/panels/settings/appearance/Effects.qml b/modules/panels/settings/appearance/Effects.qml
+index e69de29..553b96c 100644
+--- a/modules/panels/settings/appearance/Effects.qml
++++ b/modules/panels/settings/appearance/Effects.qml
+@@ -0,0 +1,108 @@
++import QtQuick
++import QtQuick.Controls
++import QtQuick.Layouts
++import qs.services
++import qs.components
++import qs.commons
++
++Item {
++  id: root
++
++  ScrollView {
++    anchors.fill: parent
++    anchors.margins: ScalerService.s(20)
++    clip: true
++    ScrollBar.vertical.policy: ScrollBar.AsNeeded
++
++    ColumnLayout {
++      width: parent.width
++      spacing: ScalerService.s(20)
++
++      HeaderSettings {
++        name: lang?.appearance?.effects || "Effects"
++        Layout.fillWidth: true
++      }
++
++      Rectangle {
++        Layout.fillWidth: true
++        height: ScalerService.s(1)
++        color: theme.primary.foreground
++        opacity: 0.3
++      }
++
++      SettingRow {
++        label: lang?.appearance?.panel_transparency || "Panel transparency"
++        value: Settings.appearance.panelTransparency
++        onToggled: {
++          Settings.appearance.panelTransparency = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.appearance?.blur_effects || "Blur effects"
++        value: Settings.appearance.blurEffects
++        onToggled: {
++          Settings.appearance.blurEffects = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.appearance?.animations || "UI animations"
++        value: Settings.appearance.animations
++        onToggled: {
++          Settings.appearance.animations = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.appearance?.floating_effects || "Floating background effects"
++        value: Settings.appearance.floatingEffects
++        onToggled: {
++          Settings.appearance.floatingEffects = value;
++        }
++      }
++
++      Item {
++        Layout.fillHeight: true
++      }
++    }
++  }
++
++  component SettingRow: Rectangle {
++    id: settingRow
++    property string label: ""
++    property bool value: false
++    property bool enabled: true
++    signal toggled(bool value)
++
++    Layout.fillWidth: true
++    Layout.preferredHeight: ScalerService.s(56)
++    color: theme.button.background
++    radius: ScalerService.s(10)
++    border.color: theme.button.border
++    border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++    RowLayout {
++      anchors.fill: parent
++      anchors.margins: ScalerService.s(15)
++      spacing: ScalerService.s(12)
++
++      CustomText {
++        name: settingRow.label
++        size: "small"
++        Layout.fillWidth: true
++        elide: Text.ElideRight
++        maximumLineCount: 1
++      }
++
++      CustomToggleSwitch {
++        adapter: settingRow.value
++        enabled: settingRow.enabled
++        onClicked: {
++          settingRow.value = !settingRow.value;
++          settingRow.toggled(settingRow.value);
++        }
++      }
++    }
++  }
++}
+diff --git a/modules/panels/settings/appearance/Icons.qml b/modules/panels/settings/appearance/Icons.qml
+index e69de29..9a84a76 100644
+--- a/modules/panels/settings/appearance/Icons.qml
++++ b/modules/panels/settings/appearance/Icons.qml
+@@ -0,0 +1,86 @@
++import QtQuick
++import QtQuick.Controls
++import QtQuick.Layouts
++import qs.services
++import qs.components
++import qs.commons
++
++Item {
++  id: root
++
++  ScrollView {
++    anchors.fill: parent
++    anchors.margins: ScalerService.s(20)
++    clip: true
++    ScrollBar.vertical.policy: ScrollBar.AsNeeded
++
++    ColumnLayout {
++      width: parent.width
++      spacing: ScalerService.s(20)
++
++      HeaderSettings {
++        name: lang?.appearance?.icons || "Icons"
++        Layout.fillWidth: true
++      }
++
++      Rectangle {
++        Layout.fillWidth: true
++        height: ScalerService.s(1)
++        color: theme.primary.foreground
++        opacity: 0.3
++      }
++
++      Rectangle {
++        Layout.fillWidth: true
++        color: "transparent"
++
++        ColumnLayout {
++          width: parent.width
++          spacing: ScalerService.s(10)
++
++          CustomText {
++            name: lang?.appearance?.icon_theme || "Icon theme"
++            size: "small"
++          }
++
++          ComboBox {
++            Layout.fillWidth: true
++            model: ["default", "Papirus", "Adwaita", "Numix", "Tela"]
++            currentIndex: {
++              var idx = model.indexOf(Settings.appearance.iconTheme);
++              return idx >= 0 ? idx : 0;
++            }
++            onCurrentIndexChanged: {
++              Settings.appearance.iconTheme = model[currentIndex];
++            }
++
++            background: Rectangle {
++              color: theme.button.background
++              border.color: theme.button.border
++              border.width: 1
++              radius: 4
++            }
++          }
++
++          CustomText {
++            name: lang?.appearance?.icon_preview || "Preview"
++            size: "small"
++            Layout.topMargin: ScalerService.s(10)
++          }
++
++          RowLayout {
++            spacing: ScalerService.s(15)
++            IconImage { path: "system/setting.png"; size: "large" }
++            IconImage { path: "system/sys-exit.png"; size: "large" }
++            IconImage { path: "system/sys-lock.png"; size: "large" }
++            IconImage { path: "settings/network.png"; size: "large" }
++          }
++        }
++      }
++
++      Item {
++        Layout.fillHeight: true
++      }
++    }
++  }
++}
+diff --git a/modules/panels/settings/appearance/Layout.qml b/modules/panels/settings/appearance/Layout.qml
+index e69de29..62edaf9 100644
+--- a/modules/panels/settings/appearance/Layout.qml
++++ b/modules/panels/settings/appearance/Layout.qml
+@@ -0,0 +1,116 @@
++import QtQuick
++import QtQuick.Controls
++import QtQuick.Layouts
++import qs.services
++import qs.components
++import qs.commons
++
++Item {
++  id: root
++
++  ScrollView {
++    anchors.fill: parent
++    anchors.margins: ScalerService.s(20)
++    clip: true
++    ScrollBar.vertical.policy: ScrollBar.AsNeeded
++
++    ColumnLayout {
++      width: parent.width
++      spacing: ScalerService.s(20)
++
++      HeaderSettings {
++        name: lang?.appearance?.layout || "Layout"
++        Layout.fillWidth: true
++      }
++
++      Rectangle {
++        Layout.fillWidth: true
++        height: ScalerService.s(1)
++        color: theme.primary.foreground
++        opacity: 0.3
++      }
++
++      Rectangle {
++        Layout.fillWidth: true
++        color: "transparent"
++
++        ColumnLayout {
++          width: parent.width
++          spacing: ScalerService.s(10)
++
++          CustomText {
++            name: lang?.appearance?.dashboard_columns || "Dashboard app grid columns"
++            size: "small"
++          }
++
++          SpinBox {
++            Layout.fillWidth: true
++            from: 1
++            to: 6
++            value: Settings.dashboard.appGridColumns
++            onValueModified: {
++              Settings.dashboard.appGridColumns = value;
++            }
++            background: Rectangle {
++              color: theme.button.background
++              border.color: theme.button.border
++              border.width: 1
++              radius: 4
++            }
++          }
++
++          SettingRow {
++            Layout.topMargin: ScalerService.s(15)
++            label: lang?.appearance?.bar_labels || "Show bar stats labels"
++            value: Settings.bar.showLabels
++            onToggled: {
++              Settings.bar.showLabels = value;
++            }
++          }
++        }
++      }
++
++      Item {
++        Layout.fillHeight: true
++      }
++    }
++  }
++
++  component SettingRow: Rectangle {
++    id: settingRow
++    property string label: ""
++    property bool value: false
++    property bool enabled: true
++    signal toggled(bool value)
++
++    Layout.fillWidth: true
++    Layout.preferredHeight: ScalerService.s(56)
++    color: theme.button.background
++    radius: ScalerService.s(10)
++    border.color: theme.button.border
++    border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++    RowLayout {
++      anchors.fill: parent
++      anchors.margins: ScalerService.s(15)
++      spacing: ScalerService.s(12)
++
++      CustomText {
++        name: settingRow.label
++        size: "small"
++        Layout.fillWidth: true
++        elide: Text.ElideRight
++        maximumLineCount: 1
++      }
++
++      CustomToggleSwitch {
++        adapter: settingRow.value
++        enabled: settingRow.enabled
++        onClicked: {
++          settingRow.value = !settingRow.value;
++          settingRow.toggled(settingRow.value);
++        }
++      }
++    }
++  }
++}
+diff --git a/modules/panels/settings/appearance/Wallpapers.qml b/modules/panels/settings/appearance/Wallpapers.qml
+index aa22f12..012608f 100644
+--- a/modules/panels/settings/appearance/Wallpapers.qml
++++ b/modules/panels/settings/appearance/Wallpapers.qml
+@@ -34,7 +34,7 @@ Item {
+       onRunningChanged: {
+         if (!running) {
+           currentWallpaper = normalizePath(wallpaperPath);
+-          showNotification(lang?.wallpapers?.success_set || "Đã đặt hình nền thành công!");
++          showNotification(lang?.wallpapers?.success_set || "Wallpaper set successfully!");
+         }
+       }
+     }
+@@ -50,7 +50,7 @@ Item {
+ 
+       onRunningChanged: {
+         if (!running) {
+-          showNotification(lang?.wallpapers?.success_delete || "Đã xóa ảnh thành công!");
++          showNotification(lang?.wallpapers?.success_delete || "Image deleted successfully!");
+         }
+       }
+     }
+@@ -95,11 +95,11 @@ Item {
+           spacing: ScalerService.s(10)
+ 
+           Text {
+-            text: lang?.wallpapers?.title || "Quản lý hình ảnh"
++            text: lang?.wallpapers?.title || "Image Management"
+             color: theme.primary.foreground
+             font.pixelSize: ScalerService.s(24)
+             font.bold: true
+-            font.family: "ComicShannsMono Nerd Font"
++            font.family: "Noto Sans"
+           }
+ 
+           Item {
+@@ -134,7 +134,7 @@ Item {
+                 text: modelData.name || `Screen ${index + 1}`
+                 color: systemSettings.currentScreenIndex === index ? theme.primary.background : theme.primary.foreground
+                 font.pixelSize: ScalerService.s(12)
+-                font.family: "ComicShannsMono Nerd Font"
++                font.family: "Noto Sans"
+               }
+ 
+               MouseArea {
+@@ -164,7 +164,7 @@ Item {
+ 
+               Text {
+                 text: lang?.wallpapers?.total_images || "Tổng số ảnh:"
+-                font.family: "ComicShannsMono Nerd Font"
++                font.family: "Noto Sans"
+                 color: theme.primary.dim_foreground
+                 font.pixelSize: ScalerService.s(15)
+               }
+@@ -172,7 +172,7 @@ Item {
+               Text {
+                 text: folderModel.count
+                 color: theme.normal.blue
+-                font.family: "ComicShannsMono Nerd Font"
++                font.family: "Noto Sans"
+                 font.pixelSize: ScalerService.s(18)
+                 font.bold: true
+               }
+@@ -184,8 +184,8 @@ Item {
+               }
+ 
+               Text {
+-                text: homePath ? (lang?.wallpapers?.path || "Đường dẫn:") + " ~/Pictures/Wallpapers/" : (lang?.wallpapers?.loading || "Đang tải...")
+-                font.family: "ComicShannsMono Nerd Font"
++                text: homePath ? (lang?.wallpapers?.path || "Path:") + " ~/Pictures/Wallpapers/" : (lang?.wallpapers?.loading || "Loading...")
++                font.family: "Noto Sans"
+                 color: theme.primary.dim_foreground
+                 font.pixelSize: ScalerService.s(15)
+                 elide: Text.ElideMiddle
+@@ -200,10 +200,10 @@ Item {
+           spacing: ScalerService.s(10)
+ 
+           Text {
+-            text: lang?.wallpapers?.wallpapers_label || "Hình nền:"
++            text: lang?.wallpapers?.wallpapers_label || "Wallpapers:"
+             color: theme.primary.foreground
+             font {
+-              family: "ComicShannsMono Nerd Font"
++              family: "Noto Sans"
+               pixelSize: ScalerService.s(16)
+             }
+           }
+@@ -211,7 +211,7 @@ Item {
+           // Status indicator
+           Text {
+             visible: folderModel.status === FolderListModel.Loading
+-            text: lang?.wallpapers?.loading || "Đang tải..."
++            text: lang?.wallpapers?.loading || "Loading..."
+             color: theme.primary.dim_foreground
+             font.pixelSize: ScalerService.s(14)
+             Layout.alignment: Qt.AlignCenter
+@@ -403,7 +403,7 @@ Item {
+           // No images message
+           Text {
+             visible: folderModel.count === 0 && homePath && folderModel.status === FolderListModel.Ready
+-            text: lang?.wallpapers?.no_images || "Không tìm thấy ảnh nào trong thư mục ~/Pictures/Wallpapers"
++            text: lang?.wallpapers?.no_images || "No images found in ~/Pictures/Wallpapers folder"
+             color: theme.primary.dim_foreground
+             font.pixelSize: ScalerService.s(14)
+             Layout.alignment: Qt.AlignCenter
+@@ -412,7 +412,7 @@ Item {
+           // Loading message
+           Text {
+             visible: !homePath
+-            text: lang?.wallpapers?.loading_info || "Đang tải thông tin..."
++            text: lang?.wallpapers?.loading_info || "Loading information..."
+             color: theme.primary.dim_foreground
+             font.pixelSize: ScalerService.s(14)
+             Layout.alignment: Qt.AlignCenter
+@@ -447,7 +447,7 @@ Item {
+         spacing: ScalerService.s(15)
+ 
+         Text {
+-          text: (lang?.wallpapers?.delete_confirm || "Xác nhận xóa") + "\n" + deleteDialog.fileNameToDelete
++          text: (lang?.wallpapers?.delete_confirm || "Confirm delete") + "\n" + deleteDialog.fileNameToDelete
+           color: theme.normal.red
+           font.pixelSize: ScalerService.s(16)
+           font.bold: true
+@@ -562,7 +562,7 @@ Item {
+         }
+       }
+ 
+-      showNotification(lang?.wallpapers?.success_set || "Đã đặt hình nền thành công!");
++      showNotification(lang?.wallpapers?.success_set || "Wallpaper set successfully!");
+       systemSettings.currentWallpaper = cleanPath;  // Lưu đường dẫn đã chuẩn hóa
+     }
+ 
+diff --git a/modules/panels/settings/appearance/clockTime/ClockPanelToggle.qml b/modules/panels/settings/appearance/clockTime/ClockPanelToggle.qml
+index 40c4364..d913034 100644
+--- a/modules/panels/settings/appearance/clockTime/ClockPanelToggle.qml
++++ b/modules/panels/settings/appearance/clockTime/ClockPanelToggle.qml
+@@ -15,7 +15,7 @@ Item {
+     Text {
+       text: lang.appearance?.clock_panel_label || "Bảng đồng hồ:"
+       color: theme.primary.foreground
+-      font.family: "ComicShannsMono Nerd Font"
++      font.family: "Noto Sans"
+       font.pixelSize: ScalerService.s(16)
+       Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+     }
+diff --git a/modules/panels/settings/appearance/clockTime/ClockPositionSelector.qml b/modules/panels/settings/appearance/clockTime/ClockPositionSelector.qml
+index 9f1847a..0e43bde 100644
+--- a/modules/panels/settings/appearance/clockTime/ClockPositionSelector.qml
++++ b/modules/panels/settings/appearance/clockTime/ClockPositionSelector.qml
+@@ -24,7 +24,7 @@ Item {
+         text: lang.appearance?.clock_position_label || "Vị trí đồng hồ:"
+         color: theme.primary.foreground
+         font {
+-          family: "ComicShannsMono Nerd Font"
++          family: "Noto Sans"
+           pixelSize: ScalerService.s(18)
+           bold: true
+         }
+@@ -196,7 +196,7 @@ Item {
+             "top": "Trên cùng giữa",
+             "topRight": "Trên cùng bên phải",
+             "left": "Bên trái giữa",
+-            "center": "Chính giữa màn hình",
++            "center": "Center of screen",
+             "right": "Bên phải giữa",
+             "bottomLeft": "Dưới cùng bên trái",
+             "bottom": "Dưới cùng giữa",
+@@ -206,7 +206,7 @@ Item {
+         }
+         color: theme.primary.foreground
+         font {
+-          family: "ComicShannsMono Nerd Font"
++          family: "Noto Sans"
+           pixelSize: ScalerService.s(18)
+         }
+       }
+diff --git a/modules/panels/settings/appearance/clockTime/PositionButton.qml b/modules/panels/settings/appearance/clockTime/PositionButton.qml
+index 80515f0..2864e0c 100644
+--- a/modules/panels/settings/appearance/clockTime/PositionButton.qml
++++ b/modules/panels/settings/appearance/clockTime/PositionButton.qml
+@@ -20,7 +20,7 @@ Rectangle {
+     text: label
+     color: isSelected ? theme.primary.background : theme.primary.foreground
+     font {
+-      family: "ComicShannsMono Nerd Font"
++      family: "Noto Sans"
+       pixelSize: ScalerService.s(14)
+       bold: isSelected
+     }
+diff --git a/modules/panels/settings/appearance/panel/PanelPositionSelector.qml b/modules/panels/settings/appearance/panel/PanelPositionSelector.qml
+index 66fdd33..ebeb8e3 100644
+--- a/modules/panels/settings/appearance/panel/PanelPositionSelector.qml
++++ b/modules/panels/settings/appearance/panel/PanelPositionSelector.qml
+@@ -44,7 +44,7 @@ ColumnLayout {
+           text: root.lang?.appearance?.top || "Top"
+           color: Settings.bar.position === "top" ? theme.button.text : theme.primary.foreground
+           font {
+-            family: "ComicShannsMono Nerd Font"
++            family: "Noto Sans"
+             pixelSize: ScalerService.s(14)
+           }
+           Layout.alignment: Qt.AlignHCenter
+@@ -94,7 +94,7 @@ ColumnLayout {
+           text: root.lang?.appearance?.bottom || "Bottom"
+           color: Settings.bar.position === "bottom" ? theme.button.text : theme.primary.foreground
+           font {
+-            family: "ComicShannsMono Nerd Font"
++            family: "Noto Sans"
+             pixelSize: ScalerService.s(14)
+           }
+           Layout.alignment: Qt.AlignHCenter
+@@ -144,7 +144,7 @@ ColumnLayout {
+           text: root.lang?.appearance?.left || "Left"
+           color: Settings.bar.position === "left" ? theme.button.text : theme.primary.foreground
+           font {
+-            family: "ComicShannsMono Nerd Font"
++            family: "Noto Sans"
+             pixelSize: ScalerService.s(14)
+           }
+           Layout.alignment: Qt.AlignVCenter
+@@ -186,7 +186,7 @@ ColumnLayout {
+           text: root.lang?.appearance?.right || "Right"
+           color: Settings.bar.position === "right" ? theme.button.text : theme.primary.foreground
+           font {
+-            family: "ComicShannsMono Nerd Font"
++            family: "Noto Sans"
+             pixelSize: ScalerService.s(14)
+           }
+           Layout.alignment: Qt.AlignVCenter
+diff --git a/modules/panels/settings/appearance/theme/ListTheme.qml b/modules/panels/settings/appearance/theme/ListTheme.qml
+index c4afc08..48bd5f4 100644
+--- a/modules/panels/settings/appearance/theme/ListTheme.qml
++++ b/modules/panels/settings/appearance/theme/ListTheme.qml
+@@ -32,7 +32,7 @@ ColumnLayout {
+       }
+     }
+     font {
+-      family: "ComicShannsMono Nerd Font"
++      family: "Noto Sans"
+       pixelSize: ScalerService.s(18)
+       bold: true
+     }
+@@ -166,7 +166,7 @@ ColumnLayout {
+             width: ScalerService.s(40)
+             horizontalAlignment: Text.AlignLeft
+             font {
+-              family: "ComicShannsMono Nerd Font"
++              family: "Noto Sans"
+               pixelSize: ScalerService.s(12)  // Đã sửa từ: panelManager.fullsetting ? 16 : 12
+               bold: true
+             }
+diff --git a/modules/panels/settings/appearance/theme/ThemeCard.qml b/modules/panels/settings/appearance/theme/ThemeCard.qml
+index e7d3c63..59f8ad5 100644
+--- a/modules/panels/settings/appearance/theme/ThemeCard.qml
++++ b/modules/panels/settings/appearance/theme/ThemeCard.qml
+@@ -58,7 +58,7 @@ Rectangle {
+     color: type === "light" ? "#2b2530" : "#cad3f5"
+     opacity: isEnabled ? 1 : 0.6
+     font {
+-      family: "ComicShannsMono Nerd Font"
++      family: "Noto Sans"
+       pixelSize: ScalerService.s(12)
+       bold: true
+     }
+diff --git a/modules/panels/settings/appearance/theme/ThemeSelection.qml b/modules/panels/settings/appearance/theme/ThemeSelection.qml
+index 6f911df..bd5405c 100644
+--- a/modules/panels/settings/appearance/theme/ThemeSelection.qml
++++ b/modules/panels/settings/appearance/theme/ThemeSelection.qml
+@@ -10,10 +10,10 @@ RowLayout {
+   spacing: ScalerService.s(12)
+ 
+   Text {
+-    text: lang.appearance?.theme_label || "Chủ đề:"
++    text: lang.appearance?.theme_label || "Theme:"
+     color: theme.primary.foreground
+     font {
+-      family: "ComicShannsMono Nerd Font"
++      family: "Noto Sans"
+       pixelSize: ScalerService.s(16)
+     }
+     Layout.preferredWidth: ScalerService.s(150)
+diff --git a/modules/panels/settings/general/Behavior.qml b/modules/panels/settings/general/Behavior.qml
+index e69de29..b04a6af 100644
+--- a/modules/panels/settings/general/Behavior.qml
++++ b/modules/panels/settings/general/Behavior.qml
+@@ -0,0 +1,111 @@
++import QtQuick
++import QtQuick.Controls
++import QtQuick.Layouts
++import qs.services
++import qs.components
++import qs.commons
++
++Item {
++  id: root
++
++  ScrollView {
++    anchors.fill: parent
++    anchors.margins: ScalerService.s(20)
++    clip: true
++    ScrollBar.vertical.policy: ScrollBar.AsNeeded
++
++    ColumnLayout {
++      width: parent.width
++      spacing: ScalerService.s(20)
++
++      HeaderSettings {
++        name: lang?.general?.behavior || "Behavior"
++        Layout.fillWidth: true
++      }
++
++      Rectangle {
++        Layout.fillWidth: true
++        height: ScalerService.s(1)
++        color: theme.primary.foreground
++        opacity: 0.3
++      }
++
++      SettingRow {
++        label: lang?.general?.show_animations || "Show animations"
++        value: Settings.general.showAnimations
++        onToggled: {
++          Settings.general.showAnimations = value;
++          Settings.appearance.animations = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.general?.click_outside_close || "Click outside to close panels"
++        value: Settings.general.clickOutsideToClose
++        onToggled: {
++          Settings.general.clickOutsideToClose = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.general?.hover_effects || "Enable hover effects"
++        value: Settings.general.hoverEffects
++        onToggled: {
++          Settings.general.hoverEffects = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.general?.performance_mode || "Performance mode (reduce effects)"
++        value: Settings.general.performanceMode
++        onToggled: {
++          Settings.general.performanceMode = value;
++          Settings.appearance.animations = !value;
++          Settings.appearance.blurEffects = !value;
++        }
++      }
++
++      Item {
++        Layout.fillHeight: true
++      }
++    }
++  }
++
++  component SettingRow: Rectangle {
++    id: settingRow
++    property string label: ""
++    property bool value: false
++    property bool enabled: true
++    signal toggled(bool value)
++
++    Layout.fillWidth: true
++    Layout.preferredHeight: ScalerService.s(56)
++    color: theme.button.background
++    radius: ScalerService.s(10)
++    border.color: theme.button.border
++    border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++    RowLayout {
++      anchors.fill: parent
++      anchors.margins: ScalerService.s(15)
++      spacing: ScalerService.s(12)
++
++      CustomText {
++        name: settingRow.label
++        size: "small"
++        Layout.fillWidth: true
++        elide: Text.ElideRight
++        maximumLineCount: 1
++      }
++
++      CustomToggleSwitch {
++        adapter: settingRow.value
++        enabled: settingRow.enabled
++        onClicked: {
++          settingRow.value = !settingRow.value;
++          settingRow.toggled(settingRow.value);
++        }
++      }
++    }
++  }
++}
+diff --git a/modules/panels/settings/general/DateTime.qml b/modules/panels/settings/general/DateTime.qml
+index e69de29..0f983ff 100644
+--- a/modules/panels/settings/general/DateTime.qml
++++ b/modules/panels/settings/general/DateTime.qml
+@@ -0,0 +1,124 @@
++import QtQuick
++import QtQuick.Controls
++import QtQuick.Layouts
++import qs.services
++import qs.components
++import qs.commons
++
++Item {
++  id: root
++
++  ScrollView {
++    anchors.fill: parent
++    anchors.margins: ScalerService.s(20)
++    clip: true
++    ScrollBar.vertical.policy: ScrollBar.AsNeeded
++
++    ColumnLayout {
++      width: parent.width
++      spacing: ScalerService.s(20)
++
++      HeaderSettings {
++        name: lang?.general?.date_time || "Date & Time"
++        Layout.fillWidth: true
++      }
++
++      Rectangle {
++        Layout.fillWidth: true
++        height: ScalerService.s(1)
++        color: theme.primary.foreground
++        opacity: 0.3
++      }
++
++      // Current time preview
++      Rectangle {
++        Layout.fillWidth: true
++        Layout.preferredHeight: ScalerService.s(80)
++        color: theme.primary.dim_background
++        radius: ScalerService.s(12)
++        border.color: theme.button.border
++        border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++        CustomText {
++          anchors.centerIn: parent
++          name: DateTimeService.currentTime
++          size: "large"
++          isBold: true
++          textColor: theme.button.text
++        }
++      }
++
++      SettingRow {
++        label: lang?.general?.time_format || "24-hour format"
++        value: Settings.clock.timeFormat === "24h"
++        onToggled: {
++          Settings.clock.timeFormat = value ? "24h" : "12h";
++        }
++      }
++
++      SettingRow {
++        label: lang?.general?.show_seconds || "Show seconds"
++        value: Settings.clock.showSeconds
++        onToggled: {
++          Settings.clock.showSeconds = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.general?.clock_widget || "Enable clock widget"
++        value: Settings.clock.enableWidget
++        onToggled: {
++          Settings.clock.enableWidget = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.general?.ntp_sync || "Network time sync"
++        value: true
++        enabled: false
++      }
++
++      Item {
++        Layout.fillHeight: true
++      }
++    }
++  }
++
++  component SettingRow: Rectangle {
++    id: settingRow
++    property string label: ""
++    property bool value: false
++    property bool enabled: true
++    signal toggled(bool value)
++
++    Layout.fillWidth: true
++    Layout.preferredHeight: ScalerService.s(56)
++    color: theme.button.background
++    radius: ScalerService.s(10)
++    border.color: theme.button.border
++    border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++    RowLayout {
++      anchors.fill: parent
++      anchors.margins: ScalerService.s(15)
++      spacing: ScalerService.s(12)
++
++      CustomText {
++        name: settingRow.label
++        size: "small"
++        Layout.fillWidth: true
++        elide: Text.ElideRight
++        maximumLineCount: 1
++      }
++
++      CustomToggleSwitch {
++        adapter: settingRow.value
++        enabled: settingRow.enabled
++        onClicked: {
++          settingRow.value = !settingRow.value;
++          settingRow.toggled(settingRow.value);
++        }
++      }
++    }
++  }
++}
+diff --git a/modules/panels/settings/general/LanguageRegion.qml b/modules/panels/settings/general/LanguageRegion.qml
+index 630558e..45ce00f 100644
+--- a/modules/panels/settings/general/LanguageRegion.qml
++++ b/modules/panels/settings/general/LanguageRegion.qml
+@@ -36,7 +36,7 @@ Item {
+         Layout.fillWidth: true
+         spacing: ScalerService.s(10)
+ 
+-        // Tiêu đề
++        // Header
+         HeaderSettings {
+           name: "Language Region"
+           opacity: root.animationProgress > 0.1 ? 1 : 0
+@@ -66,7 +66,7 @@ Item {
+         spacing: ScalerService.s(10)
+ 
+         CustomText {
+-          name: lang.general?.language_label || "Ngôn ngữ:"
++          name: lang.general?.language_label || "Language:"
+           size: "small"
+           opacity: root.animationProgress > 0.3 ? 1 : 0
+           Behavior on opacity {
+@@ -234,6 +234,11 @@ Item {
+               name: "Slovenčina",
+               flagImg: "slovakia"
+             },
++            {
++              code: "si",
++              name: "සිංහල",
++              flagImg: "sri_lanka"
++            },
+             ]
+ 
+             delegate: Item {
+diff --git a/modules/panels/settings/general/Notifications.qml b/modules/panels/settings/general/Notifications.qml
+index e69de29..d7ab17a 100644
+--- a/modules/panels/settings/general/Notifications.qml
++++ b/modules/panels/settings/general/Notifications.qml
+@@ -0,0 +1,98 @@
++import QtQuick
++import QtQuick.Controls
++import QtQuick.Layouts
++import qs.services
++import qs.components
++import qs.commons
++
++Item {
++  id: root
++
++  ScrollView {
++    anchors.fill: parent
++    anchors.margins: ScalerService.s(20)
++    clip: true
++    ScrollBar.vertical.policy: ScrollBar.AsNeeded
++
++    ColumnLayout {
++      width: parent.width
++      spacing: ScalerService.s(20)
++
++      HeaderSettings {
++        name: lang?.general?.notifications || "Notifications"
++        Layout.fillWidth: true
++      }
++
++      Rectangle {
++        Layout.fillWidth: true
++        height: ScalerService.s(1)
++        color: theme.primary.foreground
++        opacity: 0.3
++      }
++
++      SettingRow {
++        label: lang?.general?.notifications_enabled || "Enable notification popups"
++        value: Settings.general.notificationsEnabled
++        onToggled: {
++          Settings.general.notificationsEnabled = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.general?.do_not_disturb || "Do not disturb"
++        value: Settings.general.doNotDisturb
++        onToggled: {
++          Settings.general.doNotDisturb = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.general?.notification_timeout || "Notification timeout (ms)"
++        value: Settings.general.notificationTimeout > 0
++        enabled: false
++      }
++
++      Item {
++        Layout.fillHeight: true
++      }
++    }
++  }
++
++  component SettingRow: Rectangle {
++    id: settingRow
++    property string label: ""
++    property bool value: false
++    property bool enabled: true
++    signal toggled(bool value)
++
++    Layout.fillWidth: true
++    Layout.preferredHeight: ScalerService.s(56)
++    color: theme.button.background
++    radius: ScalerService.s(10)
++    border.color: theme.button.border
++    border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++    RowLayout {
++      anchors.fill: parent
++      anchors.margins: ScalerService.s(15)
++      spacing: ScalerService.s(12)
++
++      CustomText {
++        name: settingRow.label
++        size: "small"
++        Layout.fillWidth: true
++        elide: Text.ElideRight
++        maximumLineCount: 1
++      }
++
++      CustomToggleSwitch {
++        adapter: settingRow.value
++        enabled: settingRow.enabled
++        onClicked: {
++          settingRow.value = !settingRow.value;
++          settingRow.toggled(settingRow.value);
++        }
++      }
++    }
++  }
++}
+diff --git a/modules/panels/settings/general/Privacy.qml b/modules/panels/settings/general/Privacy.qml
+index e69de29..26290fe 100644
+--- a/modules/panels/settings/general/Privacy.qml
++++ b/modules/panels/settings/general/Privacy.qml
+@@ -0,0 +1,97 @@
++import QtQuick
++import QtQuick.Controls
++import QtQuick.Layouts
++import qs.services
++import qs.components
++import qs.commons
++
++Item {
++  id: root
++
++  ScrollView {
++    anchors.fill: parent
++    anchors.margins: ScalerService.s(20)
++    clip: true
++    ScrollBar.vertical.policy: ScrollBar.AsNeeded
++
++    ColumnLayout {
++      width: parent.width
++      spacing: ScalerService.s(20)
++
++      HeaderSettings {
++        name: lang?.general?.privacy || "Privacy"
++        Layout.fillWidth: true
++      }
++
++      Rectangle {
++        Layout.fillWidth: true
++        height: ScalerService.s(1)
++        color: theme.primary.foreground
++        opacity: 0.3
++      }
++
++      SettingRow {
++        label: lang?.general?.blur_panels || "Blur panel backgrounds"
++        value: Settings.general.blurPanels
++        onToggled: {
++          Settings.general.blurPanels = value;
++          Settings.appearance.blurEffects = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.general?.lock_timeout || "Screen lock timeout (seconds)"
++        value: Settings.general.lockTimeout > 0
++        enabled: false
++      }
++
++      SettingRow {
++        label: lang?.general?.disable_network_geolocation || "Disable network geolocation"
++        value: false
++        enabled: false
++      }
++
++      Item {
++        Layout.fillHeight: true
++      }
++    }
++  }
++
++  component SettingRow: Rectangle {
++    id: settingRow
++    property string label: ""
++    property bool value: false
++    property bool enabled: true
++    signal toggled(bool value)
++
++    Layout.fillWidth: true
++    Layout.preferredHeight: ScalerService.s(56)
++    color: theme.button.background
++    radius: ScalerService.s(10)
++    border.color: theme.button.border
++    border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++    RowLayout {
++      anchors.fill: parent
++      anchors.margins: ScalerService.s(15)
++      spacing: ScalerService.s(12)
++
++      CustomText {
++        name: settingRow.label
++        size: "small"
++        Layout.fillWidth: true
++        elide: Text.ElideRight
++        maximumLineCount: 1
++      }
++
++      CustomToggleSwitch {
++        adapter: settingRow.value
++        enabled: settingRow.enabled
++        onClicked: {
++          settingRow.value = !settingRow.value;
++          settingRow.toggled(settingRow.value);
++        }
++      }
++    }
++  }
++}
+diff --git a/modules/panels/settings/general/Session.qml b/modules/panels/settings/general/Session.qml
+index e69de29..6f47a14 100644
+--- a/modules/panels/settings/general/Session.qml
++++ b/modules/panels/settings/general/Session.qml
+@@ -0,0 +1,104 @@
++import QtQuick
++import QtQuick.Controls
++import QtQuick.Layouts
++import qs.services
++import qs.components
++import qs.commons
++
++Item {
++  id: root
++
++  ScrollView {
++    anchors.fill: parent
++    anchors.margins: ScalerService.s(20)
++    clip: true
++    ScrollBar.vertical.policy: ScrollBar.AsNeeded
++
++    ColumnLayout {
++      width: parent.width
++      spacing: ScalerService.s(20)
++
++      HeaderSettings {
++        name: lang?.general?.session || "Session"
++        Layout.fillWidth: true
++      }
++
++      Rectangle {
++        Layout.fillWidth: true
++        height: ScalerService.s(1)
++        color: theme.primary.foreground
++        opacity: 0.3
++      }
++
++      SettingRow {
++        label: lang?.general?.lock_on_suspend || "Lock screen on suspend"
++        value: Settings.general.autoLock
++        onToggled: {
++          Settings.general.autoLock = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.general?.lock_on_idle || "Lock screen when idle"
++        value: Settings.general.lockOnIdle
++        onToggled: {
++          Settings.general.lockOnIdle = value;
++        }
++      }
++
++      SettingRow {
++        label: lang?.general?.auto_login || "Autostart shell on login"
++        value: true
++        enabled: false
++      }
++
++      SettingRow {
++        label: lang?.general?.restore_session || "Restore previous session"
++        value: false
++        enabled: false
++      }
++
++      Item {
++        Layout.fillHeight: true
++      }
++    }
++  }
++
++  component SettingRow: Rectangle {
++    id: settingRow
++    property string label: ""
++    property bool value: false
++    property bool enabled: true
++    signal toggled(bool value)
++
++    Layout.fillWidth: true
++    Layout.preferredHeight: ScalerService.s(56)
++    color: theme.button.background
++    radius: ScalerService.s(10)
++    border.color: theme.button.border
++    border.width: Settings.appearance.enableBorder ? ScalerService.s(1) : 0
++
++    RowLayout {
++      anchors.fill: parent
++      anchors.margins: ScalerService.s(15)
++      spacing: ScalerService.s(12)
++
++      CustomText {
++        name: settingRow.label
++        size: "small"
++        Layout.fillWidth: true
++        elide: Text.ElideRight
++        maximumLineCount: 1
++      }
++
++      CustomToggleSwitch {
++        adapter: settingRow.value
++        enabled: settingRow.enabled
++        onClicked: {
++          settingRow.value = !settingRow.value;
++          settingRow.toggled(settingRow.value);
++        }
++      }
++    }
++  }
++}
+diff --git a/modules/panels/weather/WeatherCurrentInfo.qml b/modules/panels/weather/WeatherCurrentInfo.qml
+index 412d465..afd6f7c 100644
+--- a/modules/panels/weather/WeatherCurrentInfo.qml
++++ b/modules/panels/weather/WeatherCurrentInfo.qml
+@@ -32,7 +32,7 @@ RowLayout {
+     RowLayout {
+       spacing: 0
+       CustomText {
+-        name: `${WeatherService.dataModel.current.temp_c}` || "Đang tải..."
++        name: `${WeatherService.dataModel.current.temp_c}` || "Loading..."
+         Layout.alignment: Qt.AlignVCenter
+         size: "2xl"
+         isBold: true
+diff --git a/modules/panels/weather/WeatherSettings.qml b/modules/panels/weather/WeatherSettings.qml
+index b961973..2af51de 100644
+--- a/modules/panels/weather/WeatherSettings.qml
++++ b/modules/panels/weather/WeatherSettings.qml
+@@ -163,7 +163,7 @@ Item {
+             palette.text: theme.primary.foreground
+             font {
+               pixelSize: ScalerService.s(14)
+-              family: "ComicShannsMono Nerd Font"
++              family: "Noto Sans"
+             }
+             background: Rectangle {
+               color: "transparent"
+@@ -239,7 +239,7 @@ Item {
+                 color: theme.primary.foreground
+                 font {
+                   pixelSize: ScalerService.s(14)
+-                  family: "ComicShannsMono Nerd Font"
++                  family: "Noto Sans"
+                 }
+                 palette.text: theme.primary.foreground
+                 background: Rectangle {
+@@ -332,7 +332,7 @@ Item {
+                     color: theme.primary.foreground
+                     font {
+                       pixelSize: ScalerService.s(14)
+-                      family: "ComicShannsMono Nerd Font"
++                      family: "Noto Sans"
+                       bold: true
+                     }
+                     width: parent.width
+@@ -344,7 +344,7 @@ Item {
+                     color: theme.primary.dim_foreground
+                     font {
+                       pixelSize: ScalerService.s(12)
+-                      family: "ComicShannsMono Nerd Font"
++                      family: "Noto Sans"
+                     }
+                     width: parent.width
+                     elide: Text.ElideRight
+diff --git a/modules/panels/wifi/WifiEmptyState.qml b/modules/panels/wifi/WifiEmptyState.qml
+index 666b86f..2178aa9 100644
+--- a/modules/panels/wifi/WifiEmptyState.qml
++++ b/modules/panels/wifi/WifiEmptyState.qml
+@@ -27,14 +27,14 @@ Rectangle {
+       text: lang?.wifi?.disabled || "WiFi đang tắt"
+       font.pixelSize: ScalerService.s(18)
+       color: theme.primary.foreground
+-      font.family: "ComicShannsMono Nerd Font"
++      font.family: "Noto Sans"
+     }
+ 
+     Text {
+       text: lang?.wifi?.turn_on || "Bật WiFi để xem mạng khả dụng"
+       font.pixelSize: ScalerService.s(14)
+       color: theme.primary.dim_foreground
+-      font.family: "ComicShannsMono Nerd Font"
++      font.family: "Noto Sans"
+     }
+   }
+ }
+diff --git a/modules/panels/wifi/WifiPasswordBox.qml b/modules/panels/wifi/WifiPasswordBox.qml
+index 1c59d27..8d9f6cd 100644
+--- a/modules/panels/wifi/WifiPasswordBox.qml
++++ b/modules/panels/wifi/WifiPasswordBox.qml
+@@ -42,7 +42,7 @@ Rectangle {
+         text: "❌ " + passwordBox.errorMessage
+         color: theme.primary.foreground
+         font.pixelSize: ScalerService.s(12)
+-        font.family: "ComicShannsMono Nerd Font"
++        font.family: "Noto Sans"
+       }
+     }
+ 
+@@ -64,7 +64,7 @@ Rectangle {
+         Text {
+           anchors.centerIn: parent
+           text: passwordBox.showPassword ? networkData.saved_password : "••••••••"
+-          font.family: "ComicShannsMono Nerd Font"
++          font.family: "Noto Sans"
+           color: theme.primary.foreground
+           font.pixelSize: ScalerService.s(14)
+         }
+@@ -130,7 +130,7 @@ Rectangle {
+         placeholderText: networkData.security === "Open" ? (lang?.wifi?.no_password || "Không cần mật khẩu") : (lang?.wifi?.enter_password || "Nhập mật khẩu")
+         echoMode: passwordBox.showPassword ? TextInput.Normal : TextInput.Password
+         enabled: networkData.security !== "Open"
+-        font.family: "ComicShannsMono Nerd Font"
++        font.family: "Noto Sans"
+         font.pixelSize: ScalerService.s(14)
+         horizontalAlignment: TextInput.AlignHCenter
+         color: theme.primary.foreground
+diff --git a/services/CompositorService.qml b/services/CompositorService.qml
+index f63ef65..39be4ed 100644
+--- a/services/CompositorService.qml
++++ b/services/CompositorService.qml
+@@ -201,6 +201,46 @@ Singleton {
+     }
+   }
+ 
++  function focusWindow(window) {
++    if (backend && backend.focusWindow) {
++      backend.focusWindow(window);
++    } else {
++      console.log("Compositor", "No backend available for window focus");
++    }
++  }
++
++  function closeWindow(window) {
++    if (backend && backend.closeWindow) {
++      backend.closeWindow(window);
++    } else {
++      console.log("Compositor", "No backend available for closing windows");
++    }
++  }
++
++  function minimizeWindow(window) {
++    if (backend && backend.minimizeWindow) {
++      backend.minimizeWindow(window);
++    } else {
++      console.log("Compositor", "No backend available for minimizing windows");
++    }
++  }
++
++  function restoreWindow(window) {
++    if (backend && backend.restoreWindow) {
++      backend.restoreWindow(window);
++    } else {
++      console.log("Compositor", "No backend available for restoring windows");
++    }
++  }
++
++  function maximizeWindow(window) {
++    if (backend && backend.maximizeWindow) {
++      backend.maximizeWindow(window);
++    } else {
++      console.log("Compositor", "No backend available for maximizing windows");
++    }
++  }
++
+   function shutdown() {
+     Quickshell.execDetached(["sh", "-c", "systemctl poweroff || loginctl poweroff"]);
+   }
+diff --git a/services/DateTimeService.qml b/services/DateTimeService.qml
+index c5fac19..228aed5 100644
+--- a/services/DateTimeService.qml
++++ b/services/DateTimeService.qml
+@@ -83,8 +83,12 @@ Singleton {
+     root.currentMonth = months[now.getMonth()];
+     root.currentYear = now.getFullYear();
+     root.currentOfDays = now.getDate();
+-    root.currentTime = Qt.formatTime(now, "HH:mm");
+-    root.currentHour = Qt.formatTime(now, "HH");
++    var timeFormat = (Settings.clock.timeFormat === "12h") ? "hh:mm" : "HH:mm";
++    if (Settings.clock.showSeconds) timeFormat += ":ss";
++    if (Settings.clock.timeFormat === "12h") timeFormat += " AP";
++
++    root.currentTime = Qt.formatTime(now, timeFormat);
++    root.currentHour = Qt.formatTime(now, Settings.clock.timeFormat === "12h" ? "hh" : "HH");
+     root.currentMinus = Qt.formatTime(now, "mm");
+   }
+ 
+diff --git a/services/HyprlandService.qml b/services/HyprlandService.qml
+index 2009c60..ede19ec 100644
+--- a/services/HyprlandService.qml
++++ b/services/HyprlandService.qml
+@@ -368,6 +368,40 @@ Item {
+     } catch (e) {}
+   }
+ 
++  property var minimizedWindows: ({})
++
++  function minimizeWindow(window) {
++    try {
++      if (!window || !window.id)
++        return;
++      minimizedWindows[window.id] = window.workspaceId;
++      Hyprland.dispatch(`movetoworkspacesilent special:minimized address:0x${window.id}`);
++    } catch (e) {}
++  }
++
++  function restoreWindow(window) {
++    try {
++      if (!window || !window.id)
++        return;
++      var ws = minimizedWindows[window.id];
++      if (ws !== undefined && ws !== null && ws >= 1) {
++        Hyprland.dispatch(`movetoworkspacesilent ${ws} address:0x${window.id}`);
++      } else {
++        Hyprland.dispatch(`movetoworkspacesilent ${focusedWorkspaceId} address:0x${window.id}`);
++      }
++      delete minimizedWindows[window.id];
++    } catch (e) {}
++  }
++
++  function maximizeWindow(window) {
++    try {
++      if (!window || !window.id)
++        return;
++      Hyprland.dispatch(`focuswindow address:0x${window.id}`);
++      Hyprland.dispatch("fullscreen 1");
++    } catch (e) {}
++  }
++
+   function logout() {
+     try {
+       Quickshell.execDetached(["hyprctl", "dispatch", "exit"]);
+diff --git a/services/LoaderService.qml b/services/LoaderService.qml
+index 83b147b..29ae46b 100644
+--- a/services/LoaderService.qml
++++ b/services/LoaderService.qml
+@@ -144,6 +144,9 @@ Item {
+       item.visible = Qt.binding(function () {
+           return VisibleService.dashboard;
+       });
++      item.confirmRequested.connect(function (action, actionLabel) {
++          confirmDialog.show(action, actionLabel);
++      });
+     }
+   }
+   Loader {
+@@ -224,4 +227,74 @@ Item {
+       VisibleService.togglePanel("keybind")
+     }
+   }
++
++  // Window switcher state (kept here to avoid a singleton cycle with CompositorService)
++  Item {
++    id: windowSwitcher
++    property bool visible: false
++    property int selectedIndex: -1
++    readonly property ListModel windows: CompositorService.windows
++
++    function show() {
++      if (windows.count === 0) return;
++      selectedIndex = (selectedIndex + 1) % windows.count;
++      visible = true;
++    }
++
++    function cycle(forward) {
++      if (windows.count === 0) { hide(); return; }
++      if (selectedIndex < 0) selectedIndex = 0;
++      else if (forward) selectedIndex = (selectedIndex + 1) % windows.count;
++      else selectedIndex = (selectedIndex - 1 + windows.count) % windows.count;
++      visible = true;
++    }
++
++    function hide() {
++      visible = false;
++      selectedIndex = -1;
++    }
++
++    function activate() {
++      if (selectedIndex >= 0 && selectedIndex < windows.count) {
++        CompositorService.focusWindow(windows.get(selectedIndex));
++      }
++      hide();
++    }
++
++    function closeSelected() {
++      if (selectedIndex >= 0 && selectedIndex < windows.count) {
++        CompositorService.closeWindow(windows.get(selectedIndex));
++      }
++      if (selectedIndex >= windows.count) selectedIndex = windows.count - 1;
++      if (windows.count === 0) hide();
++    }
++
++    function minimizeSelected() {
++      if (selectedIndex >= 0 && selectedIndex < windows.count) {
++        CompositorService.minimizeWindow(windows.get(selectedIndex));
++      }
++    }
++
++    function restoreSelected() {
++      if (selectedIndex >= 0 && selectedIndex < windows.count) {
++        CompositorService.restoreWindow(windows.get(selectedIndex));
++      }
++    }
++  }
++
++  Loader {
++    source: "../modules/panels/window/WindowSwitcherPanel.qml"
++    active: windowSwitcher.visible
++    onLoaded: {
++      item.visible = Qt.binding(function () { return windowSwitcher.visible; });
++      item.controller = windowSwitcher;
++    }
++  }
++
++  IpcHandler {
++    target: "windowSwitcher"
++    function getToggle() {
++      windowSwitcher.show()
++    }
++  }
+ }
+diff --git a/services/NiriService.qml b/services/NiriService.qml
+index fc3610d..44d2272 100644
+--- a/services/NiriService.qml
++++ b/services/NiriService.qml
+@@ -427,6 +427,21 @@ Item {
+         } catch (e) {}
+     }
+ 
++    function minimizeWindow(window) {
++        // Niri does not have a minimize dispatcher; this is a no-op placeholder
++        console.log("Niri backend does not support minimizing windows");
++    }
++
++    function restoreWindow(window) {
++        console.log("Niri backend does not support restoring minimized windows");
++    }
++
++    function maximizeWindow(window) {
++        try {
++            Quickshell.execDetached(["niri", "msg", "action", "focus-window", "--id", window.id.toString()]);
++        } catch (e) {}
++    }
++
+     function logout() {
+         try {
+             Quickshell.execDetached(["niri", "msg", "action", "quit", "--skip-confirmation"]);
+diff --git a/services/WifiService.qml b/services/WifiService.qml
+index 403526d..4d110fb 100644
+--- a/services/WifiService.qml
++++ b/services/WifiService.qml
+@@ -9,11 +9,11 @@ Item {
+   property bool wifiEnabled: true
+   property string connectedWifi: "Not connected"
+   property bool isScanning: false
+-  property string openSsid: ""     // SSID đang mở hộp mật khẩu
++  property string openSsid: ""     // SSID with open password box
+   property bool userTyping: false  // true khi đang nhập password
+   property bool enabled: false
+-  property string connectionError: ""  // Lỗi kết nối
+-  property string currentPassword: ""  // Mật khẩu hiện tại đang được lấy
++  property string connectionError: ""  // Connection error
++  property string currentPassword: ""  // Current password being retrieved
+   property string requestedSsid: ""    // SSID đang yêu cầu lấy password
+ 
+   // =============================
+@@ -85,7 +85,7 @@ Item {
+     stderr: StdioCollector {
+       onStreamFinished: {
+         if (this.text && this.text.includes("Error")) {
+-          wifiManager.connectionError = "Mật khẩu không đúng hoặc không thể kết nối";
++          wifiManager.connectionError = "Wrong password or unable to connect";
+           forgetPassword(wifiManager.requestedSsid);
+         }
+       }
+@@ -153,7 +153,7 @@ Item {
+   }
+ 
+   function getSavedPassword(ssid) {
+-    // Lấy mật khẩu từ NetworkManager
++    // Get password from NetworkManager
+     wifiManager.requestedSsid = ssid;
+     getPasswordProcess.command = ["nmcli", "-s", "-g", "802-11-wireless-security.psk", "connection", "show", ssid];
+     getPasswordProcess.running = true;
+diff --git a/shell.qml b/shell.qml
+index c307e4f..ba5c68b 100644
+--- a/shell.qml
++++ b/shell.qml
+@@ -26,6 +26,19 @@ ShellRoot {
+   property var theme: ThemeService.theme
+   property var lang: LanguageService.translations
+ 
++  Shortcut {
++    sequence: "Alt+Tab"
++    onActivated: loaderService.windowSwitcher.cycle(true)
++  }
++  Shortcut {
++    sequence: "Alt+Shift+Tab"
++    onActivated: loaderService.windowSwitcher.cycle(false)
++  }
++  Shortcut {
++    sequence: "Meta+Tab"
++    onActivated: loaderService.windowSwitcher.cycle(true)
++  }
++
+   function showConfirmDialog(action, actionLabel) {
+     confirmDialog.show(action, actionLabel);
+   }

@@ -59,6 +59,10 @@ Rectangle {
       size: "small"
       isBold: isSelected
       Layout.alignment: Qt.AlignHCenter
+      width: parent.width - ScalerService.s(8)
+      horizontalAlignment: Text.AlignHCenter
+      wrapMode: Text.WordWrap
+      maximumLineCount: 2
       opacity: 0
 
       SequentialAnimation on opacity {

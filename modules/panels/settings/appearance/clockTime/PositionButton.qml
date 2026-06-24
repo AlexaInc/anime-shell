@@ -20,7 +20,7 @@ Rectangle {
     text: label
     color: isSelected ? theme.primary.background : theme.primary.foreground
     font {
-      family: "ComicShannsMono Nerd Font"
+      family: "Noto Sans"
       pixelSize: ScalerService.s(14)
       bold: isSelected
     }

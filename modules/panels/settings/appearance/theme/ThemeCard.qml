@@ -58,7 +58,7 @@ Rectangle {
     color: type === "light" ? "#2b2530" : "#cad3f5"
     opacity: isEnabled ? 1 : 0.6
     font {
-      family: "ComicShannsMono Nerd Font"
+      family: "Noto Sans"
       pixelSize: ScalerService.s(12)
       bold: true
     }

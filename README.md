@@ -49,7 +49,7 @@
 #### Full setup with dotfiles
 ```bash
 cd ~
-git clone https://github.com/mailong2401/dotfiles-hyprland
+git clone https://github.com/hansaka/dotfiles-hyprland
 cd dotfiles-hyprland
 chmod +x setup.sh
 ./setup.sh
@@ -69,7 +69,7 @@ yay -S quickshell-git cava sysstat qt6-5compat ttf-comicshannsmono-nerd ttf-mate
 ### 2. Clone Cartoon Shell
 ```bash
 # Clone to QuickShell config directory
-git clone https://github.com/mailong2401/cartoon-shell.git \
+git clone https://github.com/hansaka/cartoon-shell.git \
     ~/.config/quickshell/cartoon-shell
 
 cd ~/.config/quickshell/cartoon-shell
@@ -99,10 +99,10 @@ echo "quickshell --path ~/.config/quickshell/cartoon-shell" \
 
 ## Star History
 
-<a href="https://www.star-history.com/?repos=mailong2401%2Fcartoon-shell&type=date&legend=top-left">
+<a href="https://www.star-history.com/?repos=hansaka%2Fcartoon-shell&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=mailong2401/cartoon-shell&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=mailong2401/cartoon-shell&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=mailong2401/cartoon-shell&type=date&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=hansaka/cartoon-shell&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=hansaka/cartoon-shell&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=hansaka/cartoon-shell&type=date&legend=top-left" />
  </picture>
 </a>

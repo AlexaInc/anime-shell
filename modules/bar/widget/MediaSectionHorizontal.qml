@@ -40,7 +40,7 @@ Item {
           id: songText
           text: Players.mprisPlayer?.trackTitle ?? "Not Playing"
           color: theme.primary.foreground
-          font.family: "ComicShannsMono Nerd Font"
+          font.family: "Noto Sans"
           font.pixelSize: ScalerService.s(16)
 
           property bool needsMarquee: width > songContainer.width

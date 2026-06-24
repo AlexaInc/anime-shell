@@ -1,4 +1,3 @@
-// components/Settings/GeneralSettings.qml
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -6,7 +5,6 @@ import Quickshell
 import qs.services
 import qs.components
 import "./general/" as Com
-import "./appearance/" as AppCom
 import "./" as Bar
 
 Item {
@@ -24,14 +22,6 @@ Item {
     }
   }
 
-  // Timer để reload ngôn ngữ
-  property Timer reloadTimer: Timer {
-    interval: 30
-    repeat: false
-    onTriggered: languageLoader.loadLanguage()
-  }
-
-  // Chỉ giữ lại giao diện minimal mode
   ColumnLayout {
     anchors.fill: parent
     spacing: ScalerService.s(10)
@@ -46,7 +36,6 @@ Item {
     }
 
     // Main Content Area
-    // StackLayout for tabs
     StackLayout {
       Layout.fillWidth: true
       Layout.fillHeight: true
@@ -62,9 +51,11 @@ Item {
           });
         }
       }
+
+      // Tab 1: Date & Time
       Loader {
         active: root.currentTab === 1
-        source: "./appearance/Theme.qml"
+        source: "./general/DateTime.qml"
         onLoaded: {
           item.visible = Qt.binding(function () {
               return root.currentTab === 1;
@@ -72,193 +63,47 @@ Item {
         }
       }
 
-      // Tab 1: Date & Time
-      ScrollView {
-        clip: true
-        ScrollBar.vertical.policy: ScrollBar.AsNeeded
-
-        ColumnLayout {
-          width: parent.width
-          spacing: ScalerService.s(20)
-          anchors.margins: ScalerService.s(20)
-
-          Text {
-            text: lang?.general?.date_time || "Date & Time"
-            color: theme.primary.foreground
-            font {
-              family: "ComicShannsMono Nerd Font"
-              pixelSize: ScalerService.s(24)
-              bold: true
-            }
-            Layout.alignment: Qt.AlignLeft
-          }
-
-          Rectangle {
-            Layout.fillWidth: true
-            height: ScalerService.s(1)
-            color: theme.primary.foreground
-            opacity: 0.3
-          }
-
-          // Nội dung Date & Time ở đây
-          Text {
-            text: "Date & Time settings content"
-            color: theme.primary.foreground
-            Layout.alignment: Qt.AlignLeft
-            font.pixelSize: ScalerService.s(14)
-          }
-        }
-      }
-
       // Tab 2: Session
-      ScrollView {
-        clip: true
-        ScrollBar.vertical.policy: ScrollBar.AsNeeded
-
-        ColumnLayout {
-          width: parent.width
-          spacing: ScalerService.s(20)
-          anchors.margins: ScalerService.s(20)
-
-          Text {
-            text: lang?.general?.session || "Session"
-            color: theme.primary.foreground
-            font {
-              family: "ComicShannsMono Nerd Font"
-              pixelSize: ScalerService.s(24)
-              bold: true
-            }
-            Layout.alignment: Qt.AlignLeft
-          }
-
-          Rectangle {
-            Layout.fillWidth: true
-            height: ScalerService.s(1)
-            color: theme.primary.foreground
-            opacity: 0.3
-          }
-
-          // Nội dung Session ở đây
-          Text {
-            text: "Session settings content"
-            color: theme.primary.foreground
-            Layout.alignment: Qt.AlignLeft
-            font.pixelSize: ScalerService.s(14)
-          }
+      Loader {
+        active: root.currentTab === 2
+        source: "./general/Session.qml"
+        onLoaded: {
+          item.visible = Qt.binding(function () {
+              return root.currentTab === 2;
+          });
         }
       }
 
       // Tab 3: Behavior
-      ScrollView {
-        clip: true
-        ScrollBar.vertical.policy: ScrollBar.AsNeeded
-
-        ColumnLayout {
-          width: parent.width
-          spacing: ScalerService.s(20)
-          anchors.margins: ScalerService.s(20)
-
-          Text {
-            text: lang?.general?.behavior || "Behavior"
-            color: theme.primary.foreground
-            font {
-              family: "ComicShannsMono Nerd Font"
-              pixelSize: ScalerService.s(24)
-              bold: true
-            }
-            Layout.alignment: Qt.AlignLeft
-          }
-
-          Rectangle {
-            Layout.fillWidth: true
-            height: ScalerService.s(1)
-            color: theme.primary.foreground
-            opacity: 0.3
-          }
-
-          // Nội dung Behavior ở đây
-          Text {
-            text: "Behavior settings content"
-            color: theme.primary.foreground
-            Layout.alignment: Qt.AlignLeft
-            font.pixelSize: ScalerService.s(14)
-          }
+      Loader {
+        active: root.currentTab === 3
+        source: "./general/Behavior.qml"
+        onLoaded: {
+          item.visible = Qt.binding(function () {
+              return root.currentTab === 3;
+          });
         }
       }
 
       // Tab 4: Notifications
-      ScrollView {
-        clip: true
-        ScrollBar.vertical.policy: ScrollBar.AsNeeded
-
-        ColumnLayout {
-          width: parent.width
-          spacing: ScalerService.s(20)
-          anchors.margins: ScalerService.s(20)
-
-          Text {
-            text: lang?.general?.notifications || "Notifications"
-            color: theme.primary.foreground
-            font {
-              family: "ComicShannsMono Nerd Font"
-              pixelSize: ScalerService.s(24)
-              bold: true
-            }
-            Layout.alignment: Qt.AlignLeft
-          }
-
-          Rectangle {
-            Layout.fillWidth: true
-            height: ScalerService.s(1)
-            color: theme.primary.foreground
-            opacity: 0.3
-          }
-
-          // Nội dung Notifications ở đây
-          Text {
-            text: "Notifications settings content"
-            color: theme.primary.foreground
-            Layout.alignment: Qt.AlignLeft
-            font.pixelSize: ScalerService.s(14)
-          }
+      Loader {
+        active: root.currentTab === 4
+        source: "./general/Notifications.qml"
+        onLoaded: {
+          item.visible = Qt.binding(function () {
+              return root.currentTab === 4;
+          });
         }
       }
 
       // Tab 5: Privacy
-      ScrollView {
-        clip: true
-        ScrollBar.vertical.policy: ScrollBar.AsNeeded
-
-        ColumnLayout {
-          width: parent.width
-          spacing: ScalerService.s(20)
-          anchors.margins: ScalerService.s(20)
-
-          Text {
-            text: lang?.general?.privacy || "Privacy"
-            color: theme.primary.foreground
-            font {
-              family: "ComicShannsMono Nerd Font"
-              pixelSize: ScalerService.s(24)
-              bold: true
-            }
-            Layout.alignment: Qt.AlignLeft
-          }
-
-          Rectangle {
-            Layout.fillWidth: true
-            height: ScalerService.s(1)
-            color: theme.primary.foreground
-            opacity: 0.3
-          }
-
-          // Nội dung Privacy ở đây
-          Text {
-            text: "Privacy settings content"
-            color: theme.primary.foreground
-            Layout.alignment: Qt.AlignLeft
-            font.pixelSize: ScalerService.s(14)
-          }
+      Loader {
+        active: root.currentTab === 5
+        source: "./general/Privacy.qml"
+        onLoaded: {
+          item.visible = Qt.binding(function () {
+              return root.currentTab === 5;
+          });
         }
       }
     }

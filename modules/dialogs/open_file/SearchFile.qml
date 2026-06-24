@@ -27,11 +27,11 @@ Rectangle {
     TextField {
       id: searchField
       Layout.fillWidth: true
-      placeholderText: "Tìm kiếm thư mục..."
+      placeholderText: "Search folder..."
       palette.text: theme.primary.foreground       // màu chữ chính
       palette.placeholderText: theme.primary.dim_foreground  // sửa thành dim_foreground
       font.pixelSize: ScalerService.s(14)
-      font.family: "ComicShannsMono Nerd Font"
+      font.family: "Noto Sans"
       text: root.currentPath.toString().replace("file://", "")
       background: Rectangle {
         color: "transparent"

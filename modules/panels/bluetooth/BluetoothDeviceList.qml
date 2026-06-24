@@ -55,9 +55,9 @@ Rectangle {
             if (!adapter?.enabled)
             return lang?.bluetooth?.disabled || "Bluetooth đã tắt";
             if (adapter?.discovering && deviceList.count === 0)
-            return "🔍 " + (lang?.bluetooth?.searching || "Đang tìm kiếm thiết bị...");
+            return "🔍 " + (lang?.bluetooth?.searching || "Searching for devices...");
             if (deviceList.count === 0)
-            return lang?.bluetooth?.no_devices || "Không có thiết bị nào";
+            return lang?.bluetooth?.no_devices || "No devices found";
             return "";
           }
           color: theme.primary.dim_foreground

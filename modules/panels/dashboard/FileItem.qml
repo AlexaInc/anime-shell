@@ -38,6 +38,9 @@ Rectangle {
     CustomText {
       name: root.label
       isBold: mouseArea.containsMouse
+      Layout.fillWidth: true
+      wrapMode: Text.WordWrap
+      maximumLineCount: 2
       opacity: root.animationProgress > root.revealThreshold + 0.05 ? 1 : 0
     }
 

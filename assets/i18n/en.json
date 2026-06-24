@@ -45,7 +45,30 @@
     "notification_label": "Notifications:",
     "notification_system": "Show system notifications",
     "notification_sound": "Notification sounds",
-    "notification_performance": "Performance notifications"
+    "notification_performance": "Performance notifications",
+    "date_time": "Date & Time",
+    "session": "Session",
+    "behavior": "Behavior",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "time_format": "24-hour format",
+    "show_seconds": "Show seconds",
+    "clock_widget": "Enable clock widget",
+    "ntp_sync": "Network time sync",
+    "lock_on_suspend": "Lock screen on suspend",
+    "lock_on_idle": "Lock screen when idle",
+    "auto_login": "Autostart shell on login",
+    "restore_session": "Restore previous session",
+    "show_animations": "Show animations",
+    "click_outside_close": "Click outside to close panels",
+    "hover_effects": "Enable hover effects",
+    "performance_mode": "Performance mode (reduce effects)",
+    "notifications_enabled": "Enable notification popups",
+    "do_not_disturb": "Do not disturb",
+    "notification_timeout": "Notification timeout (ms)",
+    "blur_panels": "Blur panel backgrounds",
+    "lock_timeout": "Screen lock timeout (seconds)",
+    "disable_network_geolocation": "Disable network geolocation"
   },
   "appearance": {
     "title": "Appearance",
@@ -57,7 +80,18 @@
     "position_top": "Top",
     "position_bottom": "Bottom",
     "clock_position_label": "Clock Position:",
-    "panel_height_label": "Panel Height:"
+    "panel_height_label": "Panel Height:",
+    "icons": "Icons",
+    "effects": "Effects",
+    "layout": "Layout",
+    "icon_theme": "Icon theme",
+    "icon_preview": "Preview",
+    "panel_transparency": "Panel transparency",
+    "blur_effects": "Blur effects",
+    "animations": "UI animations",
+    "floating_effects": "Floating background effects",
+    "dashboard_columns": "Dashboard app grid columns",
+    "bar_labels": "Show bar stats labels"
   },
   "system": {
     "application": "Application",
@@ -229,5 +263,35 @@
     "locationPlaceholder": "Search for a city...",
     "searchButton": "🔍",
     "searchingButton": "⏳"
+  },
+  "audio": {
+    "output_device": "Output device",
+    "mute_on_startup": "Mute on startup",
+    "enable_mic": "Enable microphone"
+  },
+  "performance": {
+    "performance_mode": "Performance mode",
+    "reduce_animations": "Reduce animations",
+    "update_interval": "Fast stats update (500ms)"
+  },
+  "shortcuts": {
+    "hint": "Click Edit to manage your custom shortcuts. Default Hyprland shortcuts are shown above for reference.",
+    "add": "Add shortcut",
+    "reset": "Reset",
+    "edit": "Edit",
+    "done": "Done",
+    "custom": "Custom Shortcuts"
+  },
+  "desktop_shortcuts": {
+    "title": "Desktop Shortcuts"
+  },
+  "window_switcher": {
+    "title": "Window Switcher",
+    "hint": "Alt+Tab: cycle, Enter: focus, Esc: close",
+    "minimize": "Min",
+    "close": "Close",
+    "focus": "Focus",
+    "cancel": "Cancel",
+    "restore": "Restore"
   }
 }

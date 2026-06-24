@@ -11,6 +11,12 @@ ColumnLayout {
   Layout.preferredWidth: ScalerService.s(90)
   spacing: ScalerService.s(15)
   property real animationProgress: 0
+
+  signal confirmRequested(string action, string actionLabel)
+  function showConfirmDialog(action, actionLabel) {
+    confirmRequested(action, actionLabel);
+  }
+
   RowLayout {
     spacing: ScalerService.s(15)
     Item {
@@ -53,7 +59,7 @@ ColumnLayout {
           hoverEnabled: true
           cursorShape: Qt.PointingHandCursor
 
-          onClicked: {}
+          onClicked: showConfirmDialog("logout", lang?.confirm?.logout || "logout")
         }
       }
     }
@@ -97,7 +103,7 @@ ColumnLayout {
           hoverEnabled: true
           cursorShape: Qt.PointingHandCursor
 
-          onClicked: {}
+          onClicked: showConfirmDialog("sleep", lang?.confirm?.sleep || "sleep")
         }
       }
     }
@@ -143,7 +149,7 @@ ColumnLayout {
           hoverEnabled: true
           cursorShape: Qt.PointingHandCursor
 
-          onClicked: {}
+          onClicked: showConfirmDialog("restart", lang?.confirm?.restart || "restart")
         }
       }
     }
@@ -186,7 +192,7 @@ ColumnLayout {
           hoverEnabled: true
           cursorShape: Qt.PointingHandCursor
 
-          onClicked: {}
+          onClicked: showConfirmDialog("shutdown", lang?.confirm?.shutdown || "shutdown")
         }
       }
     }

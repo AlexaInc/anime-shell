@@ -81,7 +81,7 @@ Rectangle {
       text: !Players.mprisPlayer?.isPlaying
       ? (lang.musicPanel?.notPlaying || "Not playing")
       : (lang.musicPanel?.loading || "Loading...")
-      font.family: "ComicShannsMono Nerd Font"
+      font.family: "Noto Sans"
       font.pixelSize: ScalerService.s(14)
       color: theme.primary.dim_foreground
     }

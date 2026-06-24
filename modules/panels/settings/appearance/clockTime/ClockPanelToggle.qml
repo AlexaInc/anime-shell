@@ -15,7 +15,7 @@ Item {
     Text {
       text: lang.appearance?.clock_panel_label || "Bảng đồng hồ:"
       color: theme.primary.foreground
-      font.family: "ComicShannsMono Nerd Font"
+      font.family: "Noto Sans"
       font.pixelSize: ScalerService.s(16)
       Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
     }

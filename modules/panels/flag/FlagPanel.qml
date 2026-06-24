@@ -52,6 +52,7 @@ PanelWindow {
   { name: "russia", displayName: "Russia" },
   { name: "saudi_arabia", displayName: "Saudi Arabia" },
   { name: "slovakia", displayName: "Slovakia" },
+  { name: "sri_lanka", displayName: "Sri Lanka" },
   { name: "spain", displayName: "Spain" },
   { name: "sweden", displayName: "Sweden" },
   { name: "thailand", displayName: "Thailand" },

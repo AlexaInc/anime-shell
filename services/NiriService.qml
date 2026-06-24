@@ -427,6 +427,21 @@ Item {
         } catch (e) {}
     }
 
+    function minimizeWindow(window) {
+        // Niri does not have a minimize dispatcher; this is a no-op placeholder
+        console.log("Niri backend does not support minimizing windows");
+    }
+
+    function restoreWindow(window) {
+        console.log("Niri backend does not support restoring minimized windows");
+    }
+
+    function maximizeWindow(window) {
+        try {
+            Quickshell.execDetached(["niri", "msg", "action", "focus-window", "--id", window.id.toString()]);
+        } catch (e) {}
+    }
+
     function logout() {
         try {
             Quickshell.execDetached(["niri", "msg", "action", "quit", "--skip-confirmation"]);

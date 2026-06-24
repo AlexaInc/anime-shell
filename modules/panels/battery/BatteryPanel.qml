@@ -150,7 +150,7 @@ Item {
 
       Text {
         text: "🔋 Battery Monitor"
-        font.family: "ComicShannsMono Nerd Font"
+        font.family: "Noto Sans"
         color: textColor
         font.bold: true
         font.pointSize: ScalerService.s(14)

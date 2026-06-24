@@ -144,6 +144,9 @@ Item {
       item.visible = Qt.binding(function () {
           return VisibleService.dashboard;
       });
+      item.confirmRequested.connect(function (action, actionLabel) {
+          confirmDialog.show(action, actionLabel);
+      });
     }
   }
   Loader {
@@ -222,6 +225,76 @@ Item {
     target: "keybind"
     function getToggle() {
       VisibleService.togglePanel("keybind")
+    }
+  }
+
+  // Window switcher state (kept here to avoid a singleton cycle with CompositorService)
+  Item {
+    id: windowSwitcher
+    visible: false
+    property int selectedIndex: -1
+    readonly property ListModel windows: CompositorService.windows
+
+    function show() {
+      if (windows.count === 0) return;
+      selectedIndex = (selectedIndex + 1) % windows.count;
+      visible = true;
+    }
+
+    function cycle(forward) {
+      if (windows.count === 0) { hide(); return; }
+      if (selectedIndex < 0) selectedIndex = 0;
+      else if (forward) selectedIndex = (selectedIndex + 1) % windows.count;
+      else selectedIndex = (selectedIndex - 1 + windows.count) % windows.count;
+      visible = true;
+    }
+
+    function hide() {
+      visible = false;
+      selectedIndex = -1;
+    }
+
+    function activate() {
+      if (selectedIndex >= 0 && selectedIndex < windows.count) {
+        CompositorService.focusWindow(windows.get(selectedIndex));
+      }
+      hide();
+    }
+
+    function closeSelected() {
+      if (selectedIndex >= 0 && selectedIndex < windows.count) {
+        CompositorService.closeWindow(windows.get(selectedIndex));
+      }
+      if (selectedIndex >= windows.count) selectedIndex = windows.count - 1;
+      if (windows.count === 0) hide();
+    }
+
+    function minimizeSelected() {
+      if (selectedIndex >= 0 && selectedIndex < windows.count) {
+        CompositorService.minimizeWindow(windows.get(selectedIndex));
+      }
+    }
+
+    function restoreSelected() {
+      if (selectedIndex >= 0 && selectedIndex < windows.count) {
+        CompositorService.restoreWindow(windows.get(selectedIndex));
+      }
+    }
+  }
+
+  Loader {
+    source: "../modules/panels/window/WindowSwitcherPanel.qml"
+    active: windowSwitcher.visible
+    onLoaded: {
+      item.visible = Qt.binding(function () { return windowSwitcher.visible; });
+      item.controller = windowSwitcher;
+    }
+  }
+
+  IpcHandler {
+    target: "windowSwitcher"
+    function getToggle() {
+      windowSwitcher.show()
     }
   }
 }

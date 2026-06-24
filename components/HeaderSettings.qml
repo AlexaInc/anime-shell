@@ -13,7 +13,7 @@ RowLayout {
     text: name
     color: theme.primary.foreground
     font {
-      family: "ComicShannsMono Nerd Font"
+      family: "Noto Sans"
       pixelSize: ScalerService.s(24)
       bold: true
     }
